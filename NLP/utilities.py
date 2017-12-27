@@ -43,3 +43,16 @@ def recreateDataWithCombinedProperNouns(data):
     data='.'.join(tempData)
     return(data)
 
+def removeDotsFromAcronyms(data):
+    counter=0
+    while counter < len(data) -2:
+        if(data[counter]=='.' and data[counter+2]=='.'):
+            #print("######{}#####{}#######{}####".format(counter,data[counter-1:counter+3],data[counter+1]))
+            data=data[:counter] + str(data[counter+1]) + ' ' + data[counter+3:]
+            counter=counter+1
+        elif(data[counter]=='.' and data[counter-1].isupper()==True):
+            #print("####{}####".format(data[counter-1:counter+1]))
+            data=data[:counter] + data[counter+1:]
+        else:
+            counter=counter+1
+    return(data)
