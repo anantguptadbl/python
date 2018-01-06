@@ -1,0 +1,77 @@
+import re
+import json
+
+#Download txt from https://ia800500.us.archive.org/15/items/webstersunabridg29765gut/29765-8.txt_meta.txt as Dictionary.txt
+
+# Dictionary Graph
+with open('Dictionary.txt','r') as file1:
+    data=file1.read()
+
+# PreProcessing
+data=data.replace('\r\n\r\n','###').replace('\r\n',' ').split('###')
+
+# Placeholder for definition
+wordDef={}
+
+def checkInt(val):
+    try:
+        val1 = int(val)
+    except ValueError:
+        return(0)
+    return(1)
+
+def isStartofExampleStatements(line):
+    if(checkInt(line[0]) and line[1]=='.'):
+        return(1)
+    if(checkInt(line[0:2]) and line[2]=='.'):
+        return(1)
+    return(0)
+
+def isExplanation(line):
+    if('Defn:' in line):
+        return(1)
+    else:
+        return(0)
+
+def isnewWord(line):
+    line=line.split(';')[0].replace(' ','')
+    isupperLine = all(map(lambda l: l.isupper(), line))
+    if(isupperLine==True):
+        return line
+    else:
+        return 0
+    
+def isEndOfDefn(line):
+    if(isStartofExampleStatements(line)==1 or isnewWord(line)==1):
+        return 1
+    else:
+        return 0
+
+    
+lineCounter=0
+curWord=''
+curDefn=''
+while(lineCounter < len(data)):
+    if(isnewWord(data[lineCounter]) != 0):
+        curWord=isnewWord(data[lineCounter])
+        lineCounter=lineCounter + 1
+        next
+    elif(isExplanation(data[lineCounter])==1 and len(curWord)>0):
+        curDefn=data[lineCounter].replace('Defn:','')
+        if(curDefn.find('[') >0 ):
+            curDefn=curDefn[0:curDefn.find('[')-1]
+        curDefn=re.sub(r'[^\x00-\x7F]+',' ', curDefn)
+        lineCounter=lineCounter + 1
+        wordDef[curWord]=curDefn
+        #while(isEndOfDefn(data[lineCounter])==0):
+        #    curDefn=curDefn+data[lineCounter]
+        #    lineCounter=lineCounter + 1
+        #wordDef[curWord]=curDefn
+        curWord=''
+        curDefn=''
+    else:
+        lineCounter=lineCounter+1
+        
+import json
+with open('WordDictionary.txt','w') as file1:
+    file1.write(json.dumps(wordDef))
