@@ -3,7 +3,7 @@
 # Imports
 import tensorflow as tf
 import numpy as np
-
+from sklearn.linear_model import LinearRegression
 
 class TFLinearRegression():
     
@@ -15,7 +15,7 @@ class TFLinearRegression():
         self.y=tf.placeholder("float32",(None,1))
 
         # Setting up the Variables
-        self.w=tf.Variable(tf.random_uniform([NumberOfFeatures,1]))
+        self.w=tf.Variable(tf.random_uniform([X.shape[1],1]))
         self.b=tf.Variable(tf.random_uniform([1]))
 
         # Output
@@ -31,14 +31,20 @@ class TFLinearRegression():
         # Train of Tensorflow
         # Run the session
         with tf.Session() as sess:
-            sess.run(init)
+            sess.run(self.init)
             for runCounter in range(10000):
-                _,l=sess.run([optimizer,loss],feed_dict={x:self.X,y:self.Y.reshape(self.X.shape[0],1)})
+                _,l=sess.run([self.optimizer,self.loss],feed_dict={self.x:self.X,self.y:self.Y.reshape(self.X.shape[0],1)})
                 if(runCounter % 100==0):
                     print("The loss after {} is {}".format(runCounter,l))
-            weights,bias=sess.run([w,b],feed_dict={x:self.X,y:self.Y.reshape(self.X.shape[0],1)})    
+            weights,bias=sess.run([self.w,self.b],feed_dict={self.x:self.X,self.y:self.Y.reshape(self.X.shape[0],1)})    
         return({"weights":weights,"bias":bias})
 
+    def compareWithSklearnLinearRegression(self):
+        lrModel=LinearRegression()
+        lrModel.fit(self.X,self.Y)
+        return({"weights":lrModel.coef_,"bias":lrModel.intercept_})
+        
+        
 if __name__=="__main__":
    
     # Read/Prepare the data
@@ -47,3 +53,7 @@ if __name__=="__main__":
     lr=TFLinearRegression(data[:,0:4],data[:,4])
     results=lr.train()
     print(results)
+    sklearn_results=lr.compareWithSklearnLinearRegression()
+    print(sklearn_results)
+    
+    
