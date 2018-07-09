@@ -95,4 +95,50 @@ for numClusters in [25]:
     labels = kmeans_model.labels_
     movieCentroid['label']=labels
     
- 
+ import tensorflow as tf
+import numpy as np
+
+class TFAutoEncoder():
+    # INIT function
+    def __init__(self,X,Y,learningRate,sess):
+        # Input Data
+        self.X=X
+        self.Y=Y
+        self.sess=sess
+        
+        # Input Placeholder
+        self.x_input=tf.placeholder("float32",(None,X.shape[1]))
+        self.y_input=tf.placeholder("float32",(None,Y.shape[1]))
+        
+        # Intermediate Variables
+        self.encoder_1_weight=tf.Variable(tf.random_uniform([self.X.shape[1],300]))
+        self.encoder_2_weight=tf.Variable(tf.random_uniform([100,self.X.shape[0]]))
+        self.inner_1_weight=tf.Variable(tf.random_uniform([300,100]))
+        self.inner_2_weight=tf.Variable(tf.random_uniform([100,300]))
+        self.decoder_1_weight=tf.Variable(tf.random_uniform([self.Y.shape[0],100]))
+        self.decoder_2_weight=tf.Variable(tf.random_uniform([300,self.Y.shape[1]]))
+        
+        self.encoder_1_bias=tf.Variable(tf.random_uniform([300]))
+        self.encoder_2_bias=tf.Variable(tf.random_uniform([300]))
+        self.inner_1_bias=tf.Variable(tf.random_uniform([100]))
+        self.inner_2_bias=tf.Variable(tf.random_uniform([300]))
+        self.decoder_1_bias=tf.Variable(tf.random_uniform([300]))
+        self.decoder_2_bias=tf.Variable(tf.random_uniform([self.Y.shape[1]]))
+                
+        self.encoder_1=tf.add(tf.matmul(self.x_input,self.encoder_1_weight),self.encoder_1_bias)
+        self.encoder_2=tf.nn.sigmoid(tf.add(tf.matmul(self.encoder_2_weight,self.encoder_1),self.encoder_2_bias))
+        self.inner_1=tf.nn.sigmoid(tf.add(tf.matmul(self.encoder_2,self.inner_1_weight),self.inner_1_bias))
+        self.inner_2=tf.nn.sigmoid(tf.add(tf.matmul(self.inner_1,self.inner_2_weight),self.inner_2_bias))
+        self.decoder_1=tf.nn.sigmoid(tf.add(tf.matmul(self.decoder_1_weight,self.inner_2),self.decoder_1_bias))
+        self.decoder_2=tf.add(tf.matmul(self.decoder_1,self.decoder_2_weight),self.decoder_2_bias)
+        
+        self.loss=tf.reduce_mean(tf.pow(self.y_input-self.decoder_2,2))
+        self.optimizer=tf.train.GradientDescentOptimizer(learningRate).minimize(self.loss)
+        self.init=tf.global_variables_initializer()
+        
+    def train(self,execRange=1000):
+        self.sess.run(self.init)
+        for curIteration in range(execRange):
+            _,curLoss=self.sess.run([self.optimizer,self.loss],feed_dict={self.x_input:self.X,self.y_input:self.Y})
+            if(curIteration % 100==0):
+                print("The loss at step {} is {}".format(curIteration,curLoss))
