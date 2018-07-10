@@ -149,3 +149,12 @@ class TFAutoEncoder():
             _,curLoss=self.sess.run([self.optimizer,self.loss],feed_dict={self.x_input:self.X,self.y_input:self.Y})
             if(curIteration % 100==0):
                 print("The loss at step {} is {}".format(curIteration,curLoss))
+
+import tensorflow as tf
+import numpy as np
+with tf.Session() as sess:
+    sparse_place = tf.sparse_placeholder(tf.float64)
+    some_dense_tensor = tf.placeholder("float64",(2,2))
+    mul_result = tf.sparse_tensor_dense_matmul(sparse_place, some_dense_tensor)
+    dense_version = tf.sparse_tensor_to_dense(sparse_place)
+    sess.run(dense_version, feed_dict={sparse_place: tf.SparseTensorValue([[0,1], [2,2]], [1.5, 2.9], [3, 3]),some_dense_tensor:np.array([[1,2],[3,4]])})
