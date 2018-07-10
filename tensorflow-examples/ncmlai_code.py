@@ -158,3 +158,13 @@ with tf.Session() as sess:
     mul_result = tf.sparse_tensor_dense_matmul(sparse_place, some_dense_tensor)
     dense_version = tf.sparse_tensor_to_dense(sparse_place)
     sess.run(dense_version, feed_dict={sparse_place: tf.SparseTensorValue([[0,1], [2,2]], [1.5, 2.9], [3, 3]),some_dense_tensor:np.array([[1,2],[3,4]])})
+
+sparse_input = tf.sparse_placeholder(dtype=tf.float32, shape=[100, 100])
+coo_matrix = scipy.sparse.coo_matrix(...)
+# Wrap `coo_matrix` in the `tf.SparseTensorValue` form that TensorFlow expects.
+# SciPy stores the row and column coordinates as separate vectors, so we must 
+# stack and transpose them to make an indices matrix of the appropriate shape.
+tf_coo_matrix = tf.SparseTensorValue(
+    indices=np.array([coo_matrix.rows, coo_matrix.cols]).T,
+    values=coo_matrix.data,
+    dense_shape=coo_matrix.shape)
