@@ -4,7 +4,14 @@ ratings=pd.read_csv('/var/tmp/data1/ratings.csv')
 # Restrict to just rating of 5
 ratings=ratings[ratings['rating']==5]
 
-# Train test Split
+# MOVIE SIMILARITY
+curMovieList=ratings['movieId'].unique()
+curMovieList=curMovieList[0:20000]
+ratings=ratings[ratings['movieId'].isin(curMovieList)]
+ratings['userRank'] = ratings.groupby('movieId')['userId'].rank(ascending=False)
+ratings=ratings[ratings['userRank']< 100]
+
+# RECOMMENDATION
 trainData=ratings.sample(frac=0.005,random_state=42)
 testData=ratings[ratings['userId'].isin(trainData['userId'])].dropna()
 
