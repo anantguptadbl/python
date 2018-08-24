@@ -3,6 +3,7 @@
 AutoEncoders are one of the simplest and powerful tools in neural networks. I have tried to provide examples of various kinds of autoencoders
 
 ## Vanilla AutoEncoder
+In Vanilla AutoEncoders, we simply have the same data as input and output and fully connected layers
 
 ## Cross Entropy AutoEncoder
 
