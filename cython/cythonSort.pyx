@@ -25,3 +25,10 @@ def sortArray(np.ndarray[DTYPE_t,ndim=1] inpArray):
     cdef int lengthArr=inpArray.shape[0]
     cdef double* ArrPtr=&inpArray[0]
     myfunc(ArrPtr,lengthArr)
+
+# Usage
+#import numpy as np
+#inpArray=np.array([1.,2.,3.,7.,4.])
+#cythonSort.sortArray(inpArray)
+#print(inpArray)
+# [1. 2. 3. 4. 7.]
