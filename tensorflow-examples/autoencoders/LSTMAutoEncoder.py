@@ -86,6 +86,31 @@ class LSTMAutoencoder(object):
         else:
             self.train = optimizer.minimize(self.loss)
 
+ tf.reset_default_graph()
+tf.set_random_seed(2016)
+np.random.seed(2016)
+
+# Constants
+batch_num = 1
+hidden_num = 12
+step_num = 5
+elem_num = 2
+iteration = 4
+
+# placeholder list
+p_input = tf.placeholder(tf.float32, shape=(batch_num, step_num, elem_num))
+p_inputs = [tf.squeeze(t, [1]) for t in tf.split(p_input, step_num, 1)]
+
+cell = tf.nn.rnn_cell.LSTMCell(hidden_num, use_peepholes=True)
+ae = LSTMAutoencoder(hidden_num, p_inputs, cell=cell, decode_without_input=True)
+
+# Debugging Prints
+print("Class Batch Size is {} and Class Elem Size is {}".format(ae.batch_num,ae.elem_num))
+
+
+sess=tf.Session()
+sess.run(tf.global_variables_initializer())
+            
   hiddenStateVar=[]
 hiddenState=[]
 for x in range(data.shape[0]-5):
