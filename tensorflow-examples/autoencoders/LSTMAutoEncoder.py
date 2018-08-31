@@ -85,3 +85,10 @@ class LSTMAutoencoder(object):
             self.train = tf.train.AdamOptimizer().minimize(self.loss)
         else:
             self.train = optimizer.minimize(self.loss)
+
+  hiddenStateVar=[]
+hiddenState=[]
+for x in range(data.shape[0]-5):
+    secondLastLayer,weight,bias = sess.run([ae.enc_state,ae.final_dec_weight,ae.final_dec_bias], {p_input: data[['BITCOIN_RETURN','NVIDIA_RETURN']].values[x:x+5].reshape(1,5,2)})
+    hiddenStateVar.append(np.var(secondLastLayer[0][0]))
+    hiddenState.append(secondLastLayer[0][0])
