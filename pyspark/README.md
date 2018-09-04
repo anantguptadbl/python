@@ -3,7 +3,7 @@ This page will be catering to several implementations of python and several ML a
 
 ## UTILITIES
 
-### Removing First Row
+### Removing First Row ( dropfirstRow )
 There are many ways of removing 
 
 ### Generating Row Index ( generateRowIndex )
