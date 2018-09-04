@@ -2,8 +2,12 @@
 This page will be catering to several implementations of python and several ML algorithms
 
 ## UTILITIES
-## Removing First Row
+
+### Removing First Row
 There are many ways of removing 
+
+### Generating Row Index ( generateRowIndex )
+Generating a row index has always been challenging in a distributed environment. This code will help you do that
 
 ## ALGORITHMS
 
