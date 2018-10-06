@@ -13,3 +13,4 @@ http://www.cs.rpi.edu/~magdon/ps/journal/LowRank_IJDMM.pdf
 This is another implementation of an approximation of the covariance matrix
 
 ## Twiddle Algorithm
+https://martin-thoma.com/twiddle/
