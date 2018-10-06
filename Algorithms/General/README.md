@@ -8,7 +8,7 @@ The above paper considers the entire covariance matrix while calculating the pro
 
 However, instead of taking the entire covariance matrix, i have taken only diagonal values
 
-### TODO
+#### TODO
 http://www.cs.rpi.edu/~magdon/ps/journal/LowRank_IJDMM.pdf  
 This is another implementation of an approximation of the covariance matrix
 
