@@ -2,6 +2,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import scipy
 
 class GMM():
     def __init__(self,data):
@@ -13,7 +14,6 @@ class GMM():
     def setConfig(self,initialGaussianCenteres):
         self.initialGaussianCenteres=initialGaussianCenteres
         self.config={
-            #'means' : [[ min(self.data[i]) + (( (max(self.data[i]) - min(self.data[i]) ) * y * 1.0000) / self.initialGaussianCenteres)  for i in self.cols] for y in range(self.initialGaussianCenteres)],
             'means' : [[ np.percentile(self.data[i],(y+1)*100/(self.initialGaussianCenteres+1)) for i in self.cols] for y in range(self.initialGaussianCenteres)],
             'deviations' : [[ self.data[j].std() for j in self.cols] for i in range(self.initialGaussianCenteres)],
             'weights' : np.random.dirichlet(np.ones(self.initialGaussianCenteres),size=1)[0]  
@@ -39,17 +39,20 @@ class GMM():
     
     def expectationStep(self):
         # At this step we will compute the allocation of gaussian centres based on the current data for each point
-        #self.data['label']=self.data[self.cols].apply(lambda row: np.argmax(self.prob(row.values, self.config['means'][x],self.config['deviations'][x],self.config['weights'][x]) for x in range(self.initialGaussianCenteres)) ,axis=1)        
         self.data['label']=self.data[self.cols].apply(lambda row: self.getMaxLabel(row.values),axis=1)        
         #print("Unique Labels are {}".format(self.data['label'].unique()))
-        # For testing purposes
-        #for y in range(100):
-        #    temp=[]
-        #    for x in range(self.initialGaussianCenteres):
-        #        temp.append(self.prob(self.data[self.cols].loc[y].values, self.config['means'][x],self.config['deviations'][x],self.config['weights'][x]))
-        #    #print("The value of temp is {}".format(temp))
-        #    if(np.argmax(temp)>0):
-        #        print("The value of argmax is {}".format(np.argmax(temp)))
+        
+        # Resetting, as we have arrived at a non-expected convergence
+        if(len(self.data['label'].unique())) < self.initialGaussianCenteres :
+            print("Convergence issue, we will reset labels ")
+            self.data['label'] = self.data.transform(lambda x: np.random.choice(range(self.initialGaussianCenteres), len(x)))
+            self.config={
+                'means' : [[self.data.loc[self.data['label']==y,i].mean()  for i in self.cols] \
+                           for y in range(self.initialGaussianCenteres)],
+                'deviations' : [[self.data.loc[self.data['label']==y,i].std()  for i in self.cols] \
+                           for y in range(self.initialGaussianCenteres)],
+                'weights' : np.random.dirichlet(np.ones(self.initialGaussianCenteres),size=1)[0]  
+            }
     
     def maximizationStep(self):
         oldMean=self.config['means']
@@ -63,11 +66,8 @@ class GMM():
             [self.data[self.data['label']==x][y].values.std() for y in self.cols] for x in range(self.initialGaussianCenteres)
         ]
         
-        # we will calculate the change in means and return that value
-        #print("Means is {}".format(self.config['means']))
-        #print(oldMean)
-        #return(1)
-        print("Mean Distance is {}".format(sum([np.linalg.norm(np.array(self.config['means'][x])-np.array(oldMean[x])) for x in range(self.initialGaussianCenteres)])))
+        # For convergence, we are checking the diff in mean values
+        print("Diff in means is {}".format(sum([np.linalg.norm(np.array(self.config['means'][x])-np.array(oldMean[x])) for x in range(self.initialGaussianCenteres)])))
         return(sum([np.linalg.norm(np.array(self.config['means'][x])-np.array(oldMean[x])) for x in range(self.initialGaussianCenteres)]))
     
     def iterate(self):
