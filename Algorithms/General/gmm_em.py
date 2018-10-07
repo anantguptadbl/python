@@ -38,6 +38,9 @@ class GMM():
 
     
     def expectationStep(self):
+        # Storing the old mean
+        self.oldMean=self.config['means']
+        
         # At this step we will compute the allocation of gaussian centres based on the current data for each point
         self.data['label']=self.data[self.cols].apply(lambda row: self.getMaxLabel(row.values),axis=1)        
         #print("Unique Labels are {}".format(self.data['label'].unique()))
@@ -55,7 +58,6 @@ class GMM():
             }
     
     def maximizationStep(self):
-        oldMean=self.config['means']
         self.config['weights']=[
             (self.data[self.data['label']==x].shape[0]*1.0000) / self.data.shape[0] for x in range(self.initialGaussianCenteres)
         ]
@@ -67,13 +69,13 @@ class GMM():
         ]
         
         # For convergence, we are checking the diff in mean values
-        print("Diff in means is {}".format(sum([np.linalg.norm(np.array(self.config['means'][x])-np.array(oldMean[x])) for x in range(self.initialGaussianCenteres)])))
-        return(sum([np.linalg.norm(np.array(self.config['means'][x])-np.array(oldMean[x])) for x in range(self.initialGaussianCenteres)]))
+        print("Diff in means is {}".format(sum([np.linalg.norm(np.array(self.config['means'][x])-np.array(self.oldMean[x])) for x in range(self.initialGaussianCenteres)])))
+        return(sum([np.linalg.norm(np.array(self.config['means'][x])-np.array(self.oldMean[x])) for x in range(self.initialGaussianCenteres)]))
     
-    def iterate(self):
+    def iterate(self,threshold=0.0001):
         change=999
         iterCounter=0
-        while change > 0.0001:
+        while change > threshold:
             self.expectationStep()
             change=self.maximizationStep()
             iterCounter=iterCounter+1
@@ -91,5 +93,5 @@ if __name__=="__main__":
     data=pd.DataFrame(zip(xs,ys),columns=['X','Y'])
 
     gmmObject=GMM(data)
-    gmmObject.setConfig(2)
-    gmmObject.iterate()
+    gmmObject.setConfig(4)
+    gmmObject.iterate(0.000001)
