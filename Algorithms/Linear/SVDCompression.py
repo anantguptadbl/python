@@ -1,7 +1,10 @@
 # We would like to get a list of singular vectors that will help us capture most of the variation
 
+# Imports
+from scipy.sparse import csr_matrix
+
 # This will rely on the magnitude of the singular vector
-def getMinSingularVectorsMethod1(inpArray):
+def getMinSingularVectorsMethodValMag(inpArray):
     inpArray=csr_matrix(inpArray).asfptype()
     U,S,V = scipy.sparse.linalg.svds(inpArray, k = min(a.shape[0]-1,a.shape[1]-1))
     S1=list(reversed(S))
@@ -9,7 +12,7 @@ def getMinSingularVectorsMethod1(inpArray):
     minVal=min([i for i,x in enumerate(cumSum) if x >= 0.8])
     print(list(reversed(S1[0:minVal])))
     
-getMinSingularVectorsMethod1(a)
+
 
 # We will now do it in the distance vector way and compare it
 # This method is very inconclusive
@@ -23,4 +26,12 @@ def getMinSingularVectorsDistance(inpArray):
         distArr.append([curVectors,sum([scipy.spatial.distance.euclidean(inpArray[x],recreated[x]) for x in range(inpArray.shape[0])])])
     return(distArr)
 
-getMinSingularVectorsDistance(a)
+
+
+if __name__=="__main__":
+    a=np.random.randint(low=0,high=5, size=(100,50))
+    listOfSingularValues=getMinSingularVectorsMethodValMag(a)
+    print(len(listOfSingularValues))
+    # 29
+    distValues=getMinSingularVectorsDistance(a)
+    print(distValues)
