@@ -1,9 +1,4 @@
-# Restricted Boltzmann Machines
-
-import numpy as np
-import pandas as pd
-
-class VanillaRBM():
+class RBM():
     def __init__(self,inpArray,hiddenFactors,learningRate,gibbsSamplingStep,epochs):
         self.inpArray=inpArray
         self.hiddenFactors=hiddenFactors
@@ -26,11 +21,13 @@ class VanillaRBM():
         for curEpoch in range(self.epochs):
             # Gibbs Sampling Step
             for curStep in range(self.gibbsSamplingStep):
+                self.initArray=self.inpBias
                 firstHiddenPass=np.dot(self.initArray,self.weights)
                 firstHiddenPassProbs=logisticFunc(firstHiddenPass)
+                firstHiddenPassProbsCutOff=firstHiddenPassProbs[firstHiddenPassProbs > 0.5]
                 firstPassPositiveActivations=np.dot(inpArray.T,firstHiddenPassProbs)
 
-                firstRecreated=np.dot(firstHiddenPassProbs,self.weights.T)
+                firstRecreated=np.dot(firstHiddenPassProbsCutOff,self.weights.T)
                 secondHiddenPass=np.dot(firstRecreated,self.weights)
                 secondHiddenPassProbs=logisticFunc(secondHiddenPass)
                 secondPassPositiveActivations=np.dot(firstRecreated.T,secondHiddenPassProbs)
