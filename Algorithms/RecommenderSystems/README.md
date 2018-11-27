@@ -9,3 +9,8 @@ This performs Collaborative Filtering on the SVD results for an input data
 
 This is the [Restricted Boltzmann Machines for Collaborative Filtering paper](https://www.cs.toronto.edu/~rsalakhu/papers/rbmcf.pdf)
 It covers Unit 2 within the paper. Other units are work in Progress
+
+
+TODO
+#####
+1) Coding up https://www.cs.toronto.edu/~rsalakhu/papers/rbmcf.pdf
