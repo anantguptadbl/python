@@ -24,7 +24,7 @@ class RBM():
                 self.initArray=self.inpBias
                 firstHiddenPass=np.dot(self.initArray,self.weights)
                 firstHiddenPassProbs=logisticFunc(firstHiddenPass)
-                firstHiddenPassProbsCutOff=firstHiddenPassProbs[firstHiddenPassProbs > 0.5]
+                firstHiddenPassProbsCutOff=firstHiddenPassProbs > 0.5
                 firstPassPositiveActivations=np.dot(inpArray.T,firstHiddenPassProbs)
 
                 firstRecreated=np.dot(firstHiddenPassProbsCutOff,self.weights.T)
