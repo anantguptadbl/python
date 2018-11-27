@@ -11,6 +11,5 @@ This is the [Restricted Boltzmann Machines for Collaborative Filtering paper](ht
 It covers Unit 2 within the paper. Other units are work in Progress
 
 
-TODO
-#####
-1) Coding up https://www.cs.toronto.edu/~rsalakhu/papers/rbmcf.pdf
+## TODO
+### 1)  Coding up https://www.cs.toronto.edu/~rsalakhu/papers/rbmcf.pdf
