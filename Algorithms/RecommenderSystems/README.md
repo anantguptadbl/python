@@ -13,3 +13,4 @@ It covers Unit 2 within the paper. Other units are work in Progress
 
 ## TODO
 ### 1)  Coding up https://www.cs.toronto.edu/~rsalakhu/papers/rbmcf.pdf
+### 2) https://www.researchgate.net/publication/280498168_A_Neighbourhood-Based_Stopping_Criterion_for_Contrastive_Divergence_Learning
