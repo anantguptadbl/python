@@ -47,7 +47,12 @@ class VanillaRBM():
                 self.initArray=firstRecreated
 
             # Update Weights after Gibbs Sampling
-            weightsUpdate=learningRate * (firstPassPositiveActivations - secondPassPositiveActivations)
+            weightsUpdate=learningRate * ((firstPassPositiveActivations - secondPassPositiveActivations)/self.gibbsSamplingStep)
+            # We need to divide by gibbsSamplingStep because, when we use the following formula
+            # <vk i hj>data − <vk i hj>model
+            # We need the frequency of the times when we have k ( in this case just 1) on together in both data and hidden layer
+            # Therefore for every epoch , we will have to consider the number of times each gibbs sampling was able to
+            # switch both data and hidden layer ( ON or OFF )
             self.weights=self.weights + weightsUpdate
             
     # In this module
