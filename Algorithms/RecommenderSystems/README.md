@@ -17,6 +17,6 @@ Tere are 2 methodologies mentioned here
 
 
 
-###TODO
+## TO DO
 #### )  Coding up https://www.cs.toronto.edu/~rsalakhu/papers/rbmcf.pdf
 #### ) https://www.researchgate.net/publication/280498168_A_Neighbourhood-Based_Stopping_Criterion_for_Contrastive_Divergence_Learning
