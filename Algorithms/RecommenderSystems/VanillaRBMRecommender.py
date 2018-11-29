@@ -1,4 +1,9 @@
-class RBM():
+# Restricted Boltzmann Machines
+
+import numpy as np
+import pandas as pd
+
+class VanillaRBM():
     def __init__(self,inpArray,hiddenFactors,learningRate,gibbsSamplingStep,epochs):
         self.inpArray=inpArray
         self.hiddenFactors=hiddenFactors
@@ -16,15 +21,15 @@ class RBM():
 
     # In this module
     # 1) We will not be using any biases
-    # 2) We will be calcing the error on the original array and not the input array
-    def train1(self):
+    # 2) Instead of hard coded 0.5 for the gibbs sampling, we will be doing bernoulli sampling on the hidden probs
+    def train2(self):
         for curEpoch in range(self.epochs):
             # Gibbs Sampling Step
             for curStep in range(self.gibbsSamplingStep):
-                self.initArray=self.inpBias
                 firstHiddenPass=np.dot(self.initArray,self.weights)
                 firstHiddenPassProbs=logisticFunc(firstHiddenPass)
-                firstHiddenPassProbsCutOff=firstHiddenPassProbs > 0.5
+                # The following will apply a binomial probablity to the hidden vectors. This will help us work with neighbourhood
+                firstHiddenPassProbsCutOff=np.array([[np.random.binomial(1,i) for i in line] for line in firstHiddenPassProbs])
                 firstPassPositiveActivations=np.dot(inpArray.T,firstHiddenPassProbs)
 
                 firstRecreated=np.dot(firstHiddenPassProbsCutOff,self.weights.T)
@@ -35,7 +40,36 @@ class RBM():
                 # Metrics
                 error=np.sum((self.inpArray - firstRecreated ) ** 2)
                 energy=np.sum(np.dot(firstHiddenPassProbs.T,np.dot(self.inpArray,self.weights)))
-                if(curEpoch%1000==0):
+                if( (curEpoch%1000==0) & (curStep % self.gibbsSamplingStep==0) ):
+                    print("epoch : {} gibbs step : {}  Loss :{} Energy :{}".format(curEpoch,curStep,error,energy))
+
+                # Reset
+                self.initArray=firstRecreated
+
+            # Update Weights after Gibbs Sampling
+            weightsUpdate=learningRate * (firstPassPositiveActivations - secondPassPositiveActivations)
+            self.weights=self.weights + weightsUpdate
+            
+    # In this module
+    # 1) We will not be using any biases
+    # 2) We will be calcing the error on the original array and not the input array
+    def train1(self):
+        for curEpoch in range(self.epochs):
+            # Gibbs Sampling Step
+            for curStep in range(self.gibbsSamplingStep):
+                firstHiddenPass=np.dot(self.initArray,self.weights)
+                firstHiddenPassProbs=logisticFunc(firstHiddenPass)
+                firstPassPositiveActivations=np.dot(inpArray.T,firstHiddenPassProbs)
+
+                firstRecreated=np.dot(firstHiddenPassProbs,self.weights.T)
+                secondHiddenPass=np.dot(firstRecreated,self.weights)
+                secondHiddenPassProbs=logisticFunc(secondHiddenPass)
+                secondPassPositiveActivations=np.dot(firstRecreated.T,secondHiddenPassProbs)
+
+                # Metrics
+                error=np.sum((self.inpArray - firstRecreated ) ** 2)
+                energy=np.sum(np.dot(firstHiddenPassProbs.T,np.dot(self.inpArray,self.weights)))
+                if( (curEpoch%1000==0) & (curStep % self.gibbsSamplingStep==0) ):
                     print("epoch : {} gibbs step : {}  Loss :{} Energy :{}".format(curEpoch,curStep,error,energy))
 
                 # Reset
@@ -70,12 +104,20 @@ if __name__=="__main__":
     inpArray=np.array([[1,0,0,0,0,1,0],[0,1,1,1,1,0,0],[1,1,1,0,0,0,0],[0,0,1,0,0,1,1],[1,1,1,1,1,0,0],[0,0,0,0,0,0,1]])
     learningRate=0.01
     gibbsSamplingStep=5
-    epochs=2000
+    epochs=10000
     hiddenFactors=3
     
     # Initializing and training the RBM
     rbm=VanillaRBM(inpArray,hiddenFactors,learningRate,gibbsSamplingStep,epochs)
     rbm.train1()
+    
+    # Recommendation : Testing
+    recArray=np.array([1,1,1,0,0,0,0])
+    print(rbm.test1(recArray))
+    
+    # Initializing and training the RBM
+    rbm=VanillaRBM(inpArray,hiddenFactors,learningRate,gibbsSamplingStep,epochs)
+    rbm.train2()
     
     # Recommendation : Testing
     recArray=np.array([1,1,1,0,0,0,0])
