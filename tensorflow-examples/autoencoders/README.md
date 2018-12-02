@@ -18,7 +18,8 @@ https://arxiv.org/pdf/1606.05908.pdf
 
 ## Sparse AutoEncoder
 
-This is based on the following paper https://web.stanford.edu/class/cs294a/sparseAutoencoder_2011new.pdf
+This is based on the following paper
+https://web.stanford.edu/class/cs294a/sparseAutoencoder_2011new.pdf
 
 ## Sparse AutoEncoder With graphs
 It is the same as above, but added graphs in order to be able to analyse
@@ -35,4 +36,5 @@ We need to tune the model in order to be able to bypass the convergence issues
 We need some metrics to be able to find out whether the model output is good
 #### 3) Other methods apart from SkipGram
 The following paper has more information that we need to implement
+
 https://arxiv.org/pdf/1301.3781.pdf
