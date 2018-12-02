@@ -18,5 +18,7 @@ https://arxiv.org/pdf/1606.05908.pdf
 
 ## Sparse AutoEncoder
 
-This is based on the following paper
-https://web.stanford.edu/class/cs294a/sparseAutoencoder_2011new.pdf
+This is based on the following paper https://web.stanford.edu/class/cs294a/sparseAutoencoder_2011new.pdf
+
+## Sparse AutoEncoder With graphs
+It is the same as above, but added graphs in order to be able to analyse
