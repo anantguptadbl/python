@@ -17,8 +17,8 @@ Tere are 2 methodologies mentioned here
 
 ## RBMWithStoppingCriterion
 This is based on the following paper<br/>
-https://www.researchgate.net/publication/280498168_A_Neighbourhood-Based_Stopping_Criterion_for_Contrastive_Divergence_Learning<br/>
-https://arxiv.org/abs/1507.06803
+ * https://www.researchgate.net/publication/280498168_A_Neighbourhood-Based_Stopping_Criterion_for_Contrastive_Divergence_Learning<br/>
+ * https://arxiv.org/abs/1507.06803
 
 ## TO DO
 #### )  Coding up https://www.cs.toronto.edu/~rsalakhu/papers/rbmcf.pdf
