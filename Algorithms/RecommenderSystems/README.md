@@ -15,8 +15,10 @@ Tere are 2 methodologies mentioned here
 ### Normal Gibbs Sampling with cutoff on 0.5
 ### Bernoulli Sampling during each pass of Gibbs ( Recommended )
 
-
+## RBMWithStoppingCriterion
+This is based on the following paper
+https://www.researchgate.net/publication/280498168_A_Neighbourhood-Based_Stopping_Criterion_for_Contrastive_Divergence_Learning
+https://arxiv.org/abs/1507.06803
 
 ## TO DO
 #### )  Coding up https://www.cs.toronto.edu/~rsalakhu/papers/rbmcf.pdf
-#### ) https://www.researchgate.net/publication/280498168_A_Neighbourhood-Based_Stopping_Criterion_for_Contrastive_Divergence_Learning
