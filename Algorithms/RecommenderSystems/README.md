@@ -12,13 +12,18 @@ This is the [Restricted Boltzmann Machines for Collaborative Filtering paper](ht
 It covers Unit 2 within the paper. Other units are work in Progress
 
 Tere are 2 methodologies mentioned here
-### Normal Gibbs Sampling with cutoff on 0.5
-### Bernoulli Sampling during each pass of Gibbs ( Recommended )
+ - Normal Gibbs Sampling with cutoff on 0.5
+ - Bernoulli Sampling during each pass of Gibbs ( Recommended )
 
 ## RBMWithStoppingCriterion
 This is based on the following paper<br/>
  * https://www.researchgate.net/publication/280498168_A_Neighbourhood-Based_Stopping_Criterion_for_Contrastive_Divergence_Learning<br/>
  * https://arxiv.org/abs/1507.06803
+
+## Non Negative Matrix Factorization
+This is a powerful method if we want to just find the similar users and similar products from a user item matrix
+It is based on an old paper
+ * https://papers.nips.cc/paper/1861-algorithms-for-non-negative-matrix-factorization.pdf
 
 ## TO DO
  - Coding up https://www.cs.toronto.edu/~rsalakhu/papers/rbmcf.pdf
