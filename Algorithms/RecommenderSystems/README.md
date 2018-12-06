@@ -21,4 +21,4 @@ This is based on the following paper<br/>
  * https://arxiv.org/abs/1507.06803
 
 ## TO DO
-#### )  Coding up https://www.cs.toronto.edu/~rsalakhu/papers/rbmcf.pdf
+ - Coding up https://www.cs.toronto.edu/~rsalakhu/papers/rbmcf.pdf
