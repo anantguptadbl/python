@@ -25,5 +25,11 @@ This is a powerful method if we want to just find the similar users and similar 
 It is based on an old paper
  * https://papers.nips.cc/paper/1861-algorithms-for-non-negative-matrix-factorization.pdf
 
+## Content Based Filtering
+Content Based filtering is a simple tool to solve the cold start problems that most of the Recommender systems face
+Some resources which were inspirations for the code are
+ * https://www.analyticsvidhya.com/blog/2015/08/beginners-guide-learn-content-based-recommender-systems/
+ * http://recommender-systems.org/content-based-filtering/
+
 ## TO DO
  - Coding up https://www.cs.toronto.edu/~rsalakhu/papers/rbmcf.pdf
