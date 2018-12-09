@@ -31,7 +31,12 @@ Some resources which were inspirations for the code are
  * https://www.analyticsvidhya.com/blog/2015/08/beginners-guide-learn-content-based-recommender-systems/
  * http://recommender-systems.org/content-based-filtering/
 
-## Probabilistic Matrix Factorization
+## Probabilistic Matrix Factorization ( Under Development )
+This is based on the paper <br/>
+https://papers.nips.cc/paper/3208-probabilistic-matrix-factorization.pdf
+
+
+
 
 ## TO DO
  - Coding up https://www.cs.toronto.edu/~rsalakhu/papers/rbmcf.pdf
