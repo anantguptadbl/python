@@ -35,6 +35,9 @@ Some resources which were inspirations for the code are
 This is based on the paper <br/>
 https://papers.nips.cc/paper/3208-probabilistic-matrix-factorization.pdf
 
+Many of the pointers have been borrrowed from several implementations
+ * http://www.utstat.toronto.edu/~rsalakhu/BPMF.html
+ * https://github.com/fuhailin/Probabilistic-Matrix-Factorization
 
 
 
