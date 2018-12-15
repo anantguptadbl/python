@@ -35,6 +35,15 @@ Some resources which were inspirations for the code are
 This is based on the paper <br/>
 https://papers.nips.cc/paper/3208-probabilistic-matrix-factorization.pdf
 
+## Collective Matrix Factorization ( Under Development )
+This is a unique way of taking into consideration the user and item features as well while coming up with recommendations for users. This is in stark contrast to other factorization based algorithms which depend just on the user and item interactions
+A paper which i liked in this regard is </br>
+https://arxiv.org/abs/1809.00366 </br>
+https://arxiv.org/pdf/1809.00366
+
+This is currently work in progress as i need to do extensive tuning and testing on real life data ( in addition to Movie Lens )
+
+
 Many of the pointers have been borrrowed from several implementations
  * http://www.utstat.toronto.edu/~rsalakhu/BPMF.html
  * https://github.com/fuhailin/Probabilistic-Matrix-Factorization
