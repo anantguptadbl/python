@@ -9,6 +9,9 @@ There are many ways of removing
 ### Generating Row Index ( generateRowIndex )
 Generating a row index has always been challenging in a distributed environment. This code will help you do that
 
+## ACCUMULATORS
+Accumulators are like global variables which you can use in lambda functions in python. When you are doing a map on a spark dataframe and you want some global variables, then these accumulator variables comes in handy
+
 ## ALGORITHMS
 
 ### KDTREE 
