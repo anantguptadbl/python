@@ -32,7 +32,6 @@ class LSTMAutoencoder(object):
         # STATE SIZE   :
         self.batch_num = inputs[0].get_shape().as_list()[0]
         self.elem_num = inputs[0].get_shape().as_list()[1]
-
         if cell is None:
             self._enc_cell = LSTMCell(hidden_num)
             self._dec_cell = LSTMCell(hidden_num)
@@ -55,8 +54,9 @@ class LSTMAutoencoder(object):
                 (dec_outputs, dec_state) = tf.contrib.rnn.static_rnn(self._dec_cell, dec_inputs, initial_state=self.enc_state,dtype=tf.float32)
                 #if reverse:
                 #    dec_outputs = dec_outputs[::-1]
-                dec_output_ = tf.transpose(tf.stack(dec_outputs), [1,0,2])
-                dec_weight_ = tf.tile(tf.expand_dims(dec_weight_, 0),[self.batch_num, 1, 1])
+                dec_output_ = tf.transpose(tf.stack(dec_outputs), [0,1,2])
+                #dec_output_=dec_outputs
+                dec_weight_ = tf.tile(tf.expand_dims(dec_weight_, 0),[len(inputs), 1, 1])
                 self.output_ = tf.matmul(dec_output_, dec_weight_) + dec_bias_
             else:
             # This would not take the final encoded state as the input
@@ -76,18 +76,19 @@ class LSTMAutoencoder(object):
                 #if reverse:
                 #    dec_outputs = dec_outputs[::-1]
                 # The following converts the step_size * batch_size * elem_num to batch_size * step_size * elem_num
-                self.output_ = tf.transpose(tf.stack(dec_outputs), [1,0,2])
+                #self.output_ = tf.transpose(tf.stack(dec_outputs), [1,0,2])
+                self.output_=dec_outputs
         # INPUTS : step_size * batch_num * elem_num
         # This is converted to : batch_num * step_size * elem_num
         # What is the reason for doing this?
-        self.input_ = tf.transpose(tf.stack(inputs), [1, 0, 2])
+        #self.input_ = tf.transpose(tf.stack(inputs), [1, 0, 2])
+        self.input_=inputs
         self.loss = tf.reduce_mean(tf.square(self.input_ - self.output_))
 
         if optimizer is None:
             self.train = tf.train.AdamOptimizer().minimize(self.loss)
         else:
             self.train = optimizer.minimize(self.loss)
-            
 tf.reset_default_graph()
 a=np.array([[1,2,3],[1,2,1],[1,1,1],[2,1,3],[2,2,2],[3,4,3],[3,3,3],[3,4,5],[5,6,7],[5,6,4],[5,4,3],[5,6,6]],dtype=np.int32)
 a=a.reshape(4,3,3)
@@ -103,7 +104,7 @@ print("Input into the class is {}".format(a.shape))
 print("Batch num calculated is {}".format(p_inputs[0].get_shape().as_list()[0]))
 print("Elem num calculated is {}".format(p_inputs[0].get_shape().as_list()[1]))
 
-ae = LSTMAutoencoder(hidden_num, p_inputs,decode_without_input=True)
+ae = LSTMAutoencoder(hidden_num, p_inputs,decode_without_input=False)
 with tf.Session() as sess:
     sess.run(tf.global_variables_initializer())
     for i in range(iteration):
