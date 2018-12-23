@@ -77,12 +77,12 @@ class LSTMAutoencoder(object):
                 #    dec_outputs = dec_outputs[::-1]
                 # The following converts the step_size * batch_size * elem_num to batch_size * step_size * elem_num
                 #self.output_ = tf.transpose(tf.stack(dec_outputs), [1,0,2])
-                self.output_=dec_outputs
+                self.output_=tf.stack(dec_outputs)
         # INPUTS : step_size * batch_num * elem_num
         # This is converted to : batch_num * step_size * elem_num
         # What is the reason for doing this?
         #self.input_ = tf.transpose(tf.stack(inputs), [1, 0, 2])
-        self.input_=inputs
+        self.input_=tf.stack(inputs)
         self.loss = tf.reduce_mean(tf.square(self.input_ - self.output_))
 
         if optimizer is None:
