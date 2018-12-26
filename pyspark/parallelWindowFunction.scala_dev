@@ -1,0 +1,10 @@
+def getRankedData(rankMap:Map[String,Array[String]],partitionString:String,inputDataFrame:DataFrame,inputDataFrameTempTable:String,tempTableAlias:String):DataFrame =
+{
+
+// Partition by on the partition String
+inputDataFrame.repartition(col(partitionString))
+
+//Create the DataFrames
+val rankMapPar = rankMap.par
+
+}
