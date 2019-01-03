@@ -21,6 +21,9 @@ def generateRowIndex(dfObject,indexColName):
     dfObject=dfObject.withColumn(indexColName,curSelect)
     return(dfObject)
     
+def dropFirstRowFromDataFrame(dfObject):
+    curSchema=dfObject.schema
+    
 if __name__=="__main__":
     data=sc.TextFile("file:///someFile.txt")
     data=dropfirstRow(data)
