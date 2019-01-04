@@ -3,6 +3,8 @@
 // 2) columnVal
 // 3) metricVal
 
+import scala.math.min
+
 data.cache()
 data.printSchema()
 
@@ -37,9 +39,10 @@ val data4=datay.rdd.map
   Vectors.dense(array.map(_.asInstanceOf[BigDecimal].doubleValue()))
 }
 
-val numberOfVectors=10
+
 val mat:RowMatrix = new RowMatrix(data4)
-val svd:SingularValueDecomposition[RowMatrix,Matrix]=mat.computeSVD(numberOfVectors,computeU=true)
+val numberOfVectors=min(mat.numCols(),mat.numRows())
+val svd:SingularValueDecomposition[RowMatrix,Matrix]=mat.computeSVD(numberOfVectors.toInt,computeU=true)
 val U:RowMatrix = svd.U
 val S:Vector = svd.s
 val V:Matrix = svd.V
