@@ -48,7 +48,9 @@ https://arxiv.org/pdf/1809.00366
 
 This is currently work in progress as i need to do extensive tuning and testing on real life data ( in addition to Movie Lens )
 
-
+## Alternating Least Squares
+This is a unique way of coming up with a scalable matrix factorization
+The paper for this algorithm is http://stanford.edu/~rezab/classes/cme323/S15/notes/lec14.pdf
 
 ## TO DO
  - Coding up https://www.cs.toronto.edu/~rsalakhu/papers/rbmcf.pdf
