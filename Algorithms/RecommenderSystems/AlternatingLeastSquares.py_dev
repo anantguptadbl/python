@@ -1,36 +1,46 @@
 # ALS : Alternating Least Squares Algorithm
 import numpy as np
 
-# Configuration
-a=np.array([[5,2,0,0,-2],[5,2,2,0,-2],[-2,2,2,0,0]])
-numUsers=3
-numProducts=5
-k=2
-lambdaVal=0.1
+class ALS():
 
-# Initialization
-x=np.random.rand(3,k)
-y=np.random.rand(5,k)
+    def __init__(self,inpArray,lambdaVal,latentFeatures):
+        # Configuration
+        self.numUsers=inpArray.shape[0]
+        self.numProducts=inpArray.shape[1]
+        self.k=latentFeatures
+        self.a=inpArray
+        self.lambdaVal=lambdaVal
 
-prevError=0
-alteredLambda=0
-while(1):
-    # Update the Products keeping the user constant in each loop
-    #print("Initial X is {}".format(x))
-    for i in range(numUsers):
-        x[i,:]=np.dot(np.linalg.inv(np.dot(y.T,y) + (lambdaVal * np.eye(y.shape[1]))),np.dot(y.T,a[i].reshape(len(a[i]),1))).T
+        # Initialization
+        self.x=np.random.rand(self.numUsers,self.k)
+        self.y=np.random.rand(self.numProducts,self.k)
 
-    # Update the Users keeping the product constant in each loop
-    for i in range(numProducts):
-        y[i,:]=np.dot(np.linalg.inv(np.dot(x.T,x) + (lambdaVal * np.eye(x.shape[1]))),np.dot(x.T,a[:,i].reshape(len(a[:,i]),1))).T
-    curError=sum(sum(a-np.dot(x,y.T)))
-    print("curError is {} and prevError is {} and alteredStatus is {}".format(curError,prevError,alteredLambda))
-    if((prevError==curError) and alteredLambda==1):
-        break
-    if(round(prevError,10)==round(curError,10)):
-        alteredLambda=1
-        lambdaVal=lambdaVal * lambdaVal
-        print(lambdaVal)
-    else:
+    def trainData(self):
+        prevError=0
         alteredLambda=0
-    prevError=sum(sum(a-np.dot(x,y.T)))
+        while(1):
+            # Update the Products keeping the user constant in each loop
+            #print("Initial X is {}".format(x))
+            for i in range(self.numUsers):
+                self.x[i,:]=np.dot(np.linalg.inv(np.dot(self.y.T,self.y) + (self.lambdaVal * np.eye(self.y.shape[1]))),np.dot(self.y.T,a[i].reshape(len(self.a[i]),1))).T 
+
+            # Update the Users keeping the product constant in each loop
+            for i in range(self.numProducts):
+                self.y[i,:]=np.dot(np.linalg.inv(np.dot(self.x.T,self.x) + (self.lambdaVal * np.eye(self.x.shape[1]))),np.dot(self.x.T,self.a[:,i].reshape(len(self.a[:,i]),1))).T
+            curError=sum(sum(self.a-np.dot(self.x,self.y.T)))
+            #print("curError is {} and prevError is {} and alteredStatus is {}".format(curError,prevError,alteredLambda))
+            if((prevError==curError) and alteredLambda==1):
+                break
+            if(round(prevError,10)==round(curError,10)):
+                alteredLambda=1
+                self.lambdaVal=self.lambdaVal * self.lambdaVal
+                print("Lambda altered to {}".format(self.lambdaVal))
+            else:
+                alteredLambda=0
+            prevError=sum(sum(self.a-np.dot(self.x,self.y.T)))
+    
+if __name__=="__main__":
+    from scipy.spatial import distance
+    a=np.array([[5,2,0,0,-2],[5,2,2,0,-2],[-2,2,2,0,0]])
+    als=ALS(a,0.1,2)
+    print(distance.squareform(distance.pdist(als.x)))
