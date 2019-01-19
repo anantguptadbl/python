@@ -2,7 +2,7 @@
 import numpy as np
 
 # Configuration
-a=np.array([[4,1,0,0,-1],[0,3,3,0,1],[0,0,2,2,0]])
+a=np.array([[5,2,0,0,-2],[5,2,2,0,-2],[-2,2,2,0,0]])
 numUsers=3
 numProducts=5
 k=2
@@ -11,32 +11,26 @@ lambdaVal=0.1
 # Initialization
 x=np.random.rand(3,k)
 y=np.random.rand(5,k)
-I=np.eye(k)
 
+prevError=0
+alteredLambda=0
 while(1):
     # Update the Products keeping the user constant in each loop
     #print("Initial X is {}".format(x))
     for i in range(numUsers):
-        yValSum=0
-        yinputValSum=0
-        for j in range(numProducts):
-            yValSum+=np.dot(y[j],y[j].T) 
-            yinputValSum+=a[i][j] * y[j]
-        # We will now append the different rows
-        x[i,:]=np.dot(np.linalg.inv(yValSum + lambdaVal*I),yinputValSum)
-    #print("Final X is {}".format(x))
+        x[i,:]=np.dot(np.linalg.inv(np.dot(y.T,y) + (lambdaVal * np.eye(y.shape[1]))),np.dot(y.T,a[i].reshape(len(a[i]),1))).T
 
     # Update the Users keeping the product constant in each loop
-    #print("Initial Y is {}".format(y))
     for i in range(numProducts):
-        xValSum=0
-        xinputValSum=0
-        for j in range(numUsers):
-            xValSum+=np.dot(x[j],x[j].T) 
-            xinputValSum+=a[j][i] * x[j]
-        # We will now append the different rows
-        y[i,:]=np.dot(np.linalg.inv(xValSum + lambdaVal*I),xinputValSum)
-    #print("Final Y is {}".format(y))
-    print("Cur Error is {}".format(sum(sum(a-np.dot(x,y.T)))))
-    if abs(sum(sum(a-np.dot(x,y.T)))) < 100:
+        y[i,:]=np.dot(np.linalg.inv(np.dot(x.T,x) + (lambdaVal * np.eye(x.shape[1]))),np.dot(x.T,a[:,i].reshape(len(a[:,i]),1))).T
+    curError=sum(sum(a-np.dot(x,y.T)))
+    print("curError is {} and prevError is {} and alteredStatus is {}".format(curError,prevError,alteredLambda))
+    if((prevError==curError) and alteredLambda==1):
         break
+    if(round(prevError,10)==round(curError,10)):
+        alteredLambda=1
+        lambdaVal=lambdaVal * lambdaVal
+        print(lambdaVal)
+    else:
+        alteredLambda=0
+    prevError=sum(sum(a-np.dot(x,y.T)))
