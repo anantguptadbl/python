@@ -1,10 +1,13 @@
+import tensorflow as tf
+tf.reset_default_graph()
+
 class LSTM_rnn():
 
-    def __init__(self, batch_size,state_size, num_classes,hidden_elem):
+    def __init__(self, batch_size,state_size, num_classes,hidden_state):
         self.batch_size=batch_size
         self.state_size = state_size
         self.num_classes = num_classes
-        self.hidden_elem=hidden_elem
+        self.hidden_state=hidden_state
         #self.ckpt_path = ckpt_path
         #self.model_name = model_name
 
@@ -22,12 +25,13 @@ class LSTM_rnn():
             #
             # Initial hidden state
             #init_state = tf.placeholder(shape=[2, self.batch_size,self.hidden_elem], dtype=tf.float32, name='initial_state')
-            init_cell_state=tf.placeholder(shape=[self.batch_size,self.batch_size],dtype=tf.float32,name='cell state')
-            init_hidden_state=tf.placeholder(shape=[self.batch_size,self.hidden_state],dtype=tf.float32,name='hidden state')
+            #init_cell_state=tf.placeholder(shape=[self.batch_size,self.batch_size],dtype=tf.float32,name='cellState')
+            #init_hidden_state=tf.placeholder(shape=[self.batch_size,self.hidden_state],dtype=tf.float32,name='hiddenState')
+            LSTMLoopInitState=tf.placeholder(shape=[2,None,step_num], dtype=tf.float32, name='initial_state')
             # Initializer
             xav_init = tf.contrib.layers.xavier_initializer
             # Params
-            W = tf.get_variable('W', shape=[4, self.num_classes, self.state_size], initializer=xav_init())
+            W = tf.get_variable('W', shape=[4,self.state_size,self.num_classes], initializer=xav_init())
             #U = tf.get_variable('U', shape=[3, self.state_size, self.hidden_elem], initializer=xav_init())
             UInputGate=tf.get_variable('UInputGate', shape=[self.num_classes,self.batch_size], initializer=xav_init())
             UForgetGate=tf.get_variable('UForgetGate', shape=[self.num_classes,self.batch_size], initializer=xav_init())
@@ -52,24 +56,18 @@ class LSTM_rnn():
                 g = tf.tanh(tf.matmul(x,UGate) + tf.matmul(st_1,W[3]))
                 ###
                 # new internal cell state
-                print("The shape of ct_1 is {}".format(tf.shape(ct_1)))
-                print("The shape of f is {}".format(tf.shape(f)))
-                print("The shape of i is {}".format(tf.shape(i)))
-                print("The shape of g is {}".format(tf.shape(g)))
-                print("The shape of o is {}".format(tf.shape(o)))
-                print("The shape of x is {}".format(tf.shape(x)))
                 ct = f*ct_1 + i*g
                 
                 # output state
                 st = o*tf.tanh(ct)
-                return tf.stack([st, ct])
+                return tf.pack([st, ct])
             ###
             # here comes the scan operation; wake up!
             #   tf.scan(fn, elems, initializer)
             states = tf.scan(step, 
                     tf.transpose(rnn_inputs, [1,0,2]),
-                    #initializer=init_state)
-                    initializer=[])
+                    initializer=LSTMLoopInitState)
+                    #initializer=[init_cell_state,init_hidden_state])
             #
             # predictions
             V = tf.get_variable('V', shape=[state_size, num_classes], 
