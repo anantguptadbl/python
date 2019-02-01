@@ -57,8 +57,8 @@ This uses Gradient Descent for arriving the user and item embeddings. This is a 
 http://proceedings.mlr.press/v36/li14.pdf
 
 ## Matrix Factorization using Stochastic Gradient Descent( with Bias )
-Including Bias in the Matrix Factorization helps us in having a regularization element
-One artcile that inspired me to take this up is 
+Including Bias in the Matrix Factorization helps us in having a regularization element </br>
+One artcile that inspired me to take this up is </br>
 http://www.albertauyeung.com/post/python-matrix-factorization/
 
 ## TO DO
