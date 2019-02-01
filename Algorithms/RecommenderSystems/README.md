@@ -56,6 +56,11 @@ The paper for this algorithm is http://stanford.edu/~rezab/classes/cme323/S15/no
 This uses Gradient Descent for arriving the user and item embeddings. This is a gateway to try some other recent advanced techniques
 http://proceedings.mlr.press/v36/li14.pdf
 
+## Matrix Factorization using Stochastic Gradient Descent( with Bias )
+Including Bias in the Matrix Factorization helps us in having a regularization element
+One artcile that inspired me to take this up is 
+http://www.albertauyeung.com/post/python-matrix-factorization/
+
 ## TO DO
  - Coding up https://www.cs.toronto.edu/~rsalakhu/papers/rbmcf.pdf
  - Coding up http://proceedings.mlr.press/v36/li14.pdf
