@@ -61,6 +61,11 @@ Including Bias in the Matrix Factorization helps us in having a regularization e
 One artcile that inspired me to take this up is </br>
 http://www.albertauyeung.com/post/python-matrix-factorization/
 
+## Field Aware Matrix Factorization
+Including metadata information into the User-Item Matrix Factorization 
+https://www.csie.ntu.edu.tw/~cjlin/papers/ffm.pdf
+
+
 ## TO DO
  - Coding up https://www.cs.toronto.edu/~rsalakhu/papers/rbmcf.pdf
  - Coding up http://proceedings.mlr.press/v36/li14.pdf
