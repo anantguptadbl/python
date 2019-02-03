@@ -62,7 +62,7 @@ One artcile that inspired me to take this up is </br>
 http://www.albertauyeung.com/post/python-matrix-factorization/
 
 ## Field Aware Matrix Factorization
-Including metadata information into the User-Item Matrix Factorization 
+Including metadata information into the User-Item Matrix Factorization would be a very valuable attribute. This would help come up with better latent features
 https://www.csie.ntu.edu.tw/~cjlin/papers/ffm.pdf
 
 
