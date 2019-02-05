@@ -8,9 +8,14 @@ The above paper considers the entire covariance matrix while calculating the pro
 
 However, instead of taking the entire covariance matrix, i have taken only diagonal values
 
+## Twiddle Algorithm
+https://martin-thoma.com/twiddle/
+
+## CLUSTERING ELBOW CURVE
+For a Centroid based clustering algorithm, we will have to finalize the optimal number of clusters
+
 #### TODO
 http://www.cs.rpi.edu/~magdon/ps/journal/LowRank_IJDMM.pdf  
 This is another implementation of an approximation of the covariance matrix
 
-## Twiddle Algorithm
-https://martin-thoma.com/twiddle/
+
