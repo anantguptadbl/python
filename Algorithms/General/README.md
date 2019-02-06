@@ -13,6 +13,9 @@ https://martin-thoma.com/twiddle/
 
 ## CLUSTERING ELBOW CURVE
 For a Centroid based clustering algorithm, we will have to finalize the optimal number of clusters
+Currently the way we find the optimal number of clusters is by analyzing the elbow curve. My attempt is to automate that process for efficiency. I have made use of polyfit function in python
+</br>
+https://docs.scipy.org/doc/numpy-1.15.0/reference/generated/numpy.polyfit.html
 
 #### TODO
 http://www.cs.rpi.edu/~magdon/ps/journal/LowRank_IJDMM.pdf  
