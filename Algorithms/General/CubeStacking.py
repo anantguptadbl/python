@@ -1,3 +1,6 @@
+# Imports
+import numpy as np
+
 def getAllCombinations(curState):
     combinationList=[]
     combinations={}
@@ -25,8 +28,6 @@ def generateCombo(x,allComboDict,status1,status2,status3,status4):
                 else:
                     s4=allComboDict[x][s1][s2][s3]
                     yield([s1,s2,s3,s4])
-
-statusDict={0:[],1:[],2:[],3:[]}
 
 def getValidNextLayer(curCubeLayer,allComboDict,status1,status2,status3,status4):
     sizeVals=[]
