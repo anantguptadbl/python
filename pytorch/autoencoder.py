@@ -47,3 +47,6 @@ for epoch in range(num_epochs):
     optimizer.step()
     if epoch % 10 == 0:
         print('epoch [{}/{}], loss:{:.4f}'.format(epoch + 1, num_epochs, loss))
+        
+ # How to get the weights of the Layers
+FirstLayerWeights=np.array(model.encoder[0].weight.tolist()).T
