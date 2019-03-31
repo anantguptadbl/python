@@ -18,3 +18,11 @@ Q(S,A) = Q(S,A) + R(S,A) + gamma * max( Q(A,A+1) )
 ## TIC TAC TOE Q Algorithm 2
 
 Q(S,A) = Q(S,A) + alpha * ( R(S,A) + gamma * max(Q(A,A+1)) - Q(S,A) )
+
+## TIC TAC TOE DEEP Q ALGORITHM
+In the Deep Q Learning, the Q matrix values are learned by a neural network. Each training game provides new training data for the neural network ( much like the data in each epoch )
+After the network has been trained on sufficient data, you can use that for making predictions
+
+This is the training data
+
+CurState + NextState   <=>  QValue
