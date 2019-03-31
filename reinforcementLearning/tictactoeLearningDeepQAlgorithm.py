@@ -1,3 +1,27 @@
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+from torch.autograd import Variable
+from torch.utils.data import DataLoader
+from torchvision import transforms
+
+class tictactoeLearning(nn.Module):
+    def __init__(self):
+        super(tictactoeLearning, self).__init__()
+        self.model1=nn.Sequential(
+            nn.Linear(18,5),
+            nn.ReLU(True),
+            nn.Linear(5,1),
+            nn.Sigmoid()
+        )
+    
+    def forward(self,x):
+        x=self.model1(x)
+        return x
+    
+print("the tic tac toe learning class has been created")
+
+
 # IMPORTS
 import random
 import numpy as np
@@ -20,8 +44,14 @@ class tictactoe(object):
         self.RMatrix={}
         self.QMatrix={}
         self.QGamma=0.2
+        self.modelLearningRate=0.1
+        self.trainCount=0
         self.X=[]
         self.Y=[]
+        self.model = tictactoeLearning()
+        self.criterion = nn.MSELoss()
+        self.optimizer = torch.optim.Adam(self.model.parameters(),lr=self.modelLearningRate, weight_decay=1e-5)
+        #self.optimizer = torch.optim.Adam(self.model.parameters(), lr=self.modelLearningRate, weight_decay=1e-5)
     
     def resetBoard(self):
         self.board=np.array([0,0,0,0,0,0,0,0,0])
@@ -131,12 +161,21 @@ class tictactoe(object):
     
     # Q Learning : Q Matrix
     def createQMatrix(self):
+        self.trainCount=self.trainCount + 1
+        self.X=[]
+        self.Y=[]
         while(self.updateQMatrixStep() != True):
             a=1
-        print("We have the Q matrix data for the neural network training")
-        print(self.X)
-        print(self.Y)
-        print("We will now be passing this data to the training module")
+        if(self.trainCount % 1000==0):
+            print("Training the model for epoch number {}".format(self.trainCount))
+        self.optimizer.zero_grad()
+        numRows=len(self.Y)
+        self.X=np.array(self.X).astype(np.float32)
+        self.Y=np.array(self.Y).reshape(numRows,1).astype(np.float32)
+        dataOutput = self.model(Variable(torch.from_numpy(self.X)))
+        loss = self.criterion(dataOutput,Variable(torch.from_numpy(self.Y)))
+        loss.backward()
+        self.optimizer.step()
         
             
     # Q Learning : R Matrix   
@@ -179,16 +218,14 @@ class tictactoe(object):
         
     def playGame(self):
         while(self.playStep() != True):
-            print("the current state of the board is {}".format(self.board))
             a=1
 
     def playStep(self):
         self.toggle()
+        print("the current board is {}".format(self.board))
         emptySteps=np.where(self.board==0)[0]
-        print("the current state of the board is {}".format(self.board))
         if(self.curPlayer==2):
             randomChoice=random.choice(emptySteps)
-            print("The random choice made is {}".format(randomChoice))
             self.board[random.choice(emptySteps)]=self.curPlayer
             self.curEvaluation=self.evaluateBoard(self.curPlayer)
             # Evaluate the board
@@ -201,7 +238,20 @@ class tictactoe(object):
             else:
                 return False
         else:
-            stepLocation=self.predictNextQState(self.board)
+            # Since we have trained the model on playing as Player 1
+            # 1) We will first get all the possible states possible from the current board state
+            emptySteps=np.where(self.board==0)[0]
+            nextCombinations=[]
+            for nextStep in emptySteps:
+                origArray=copy.deepcopy(self.board)
+                origArray[nextStep]=self.curPlayer
+                nextCombinations.append(list(self.board) + list(origArray))
+            # 2) We will now be passing that through the model
+            results=curBoard.model(Variable(torch.from_numpy(np.array(nextCombinations).astype(np.float32)))).data.numpy()
+            nextCombinations=nextCombinations[results.argmax()]
+            for stepLocation in emptySteps:
+                if(nextCombinations[stepLocation] <> 0):
+                    break
             self.board[stepLocation]=self.curPlayer
             # Evaluate the board
             self.curEvaluation=self.evaluateBoard(self.curPlayer)
@@ -218,14 +268,14 @@ if __name__=="__main__":
     # Running the code
     curBoard=tictactoe()
     curBoard.createRMatrix()
-    for x in range(1000):
+    for x in range(10000):
         curBoard.resetBoard()
         curBoard.createRMatrix()
     print("We now have the R Matrix")
-    for x in range(5):
+    for x in range(10000):
         curBoard.resetBoard()
         curBoard.createQMatrix()
     print("We now have the Q Matrix")
-    # We will now play the game
-    #curBoard.resetBoard()
-    #curBoard.playGame()
+    # We will now play the game on the trained model
+    curBoard.resetBoard()
+    curBoard.playGame()
