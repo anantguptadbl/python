@@ -5,14 +5,14 @@ from torch.autograd import Variable
 from torch.utils.data import DataLoader
 from torchvision import transforms
 
+# Pytorch neural network class
 class tictactoeLearning(nn.Module):
     def __init__(self):
         super(tictactoeLearning, self).__init__()
         self.model1=nn.Sequential(
             nn.Linear(18,5),
             nn.ReLU(True),
-            nn.Linear(5,1),
-            nn.Sigmoid()
+            nn.Linear(5,1)
         )
     
     def forward(self,x):
@@ -21,15 +21,10 @@ class tictactoeLearning(nn.Module):
     
 print("the tic tac toe learning class has been created")
 
-
 # IMPORTS
 import random
 import numpy as np
 import copy
-
-# Pytorch neural network class
-
-
 
 # First we will write a simple TIC TAC TOE cube algo
 class tictactoe(object):
@@ -168,14 +163,18 @@ class tictactoe(object):
             a=1
         if(self.trainCount % 1000==0):
             print("Training the model for epoch number {}".format(self.trainCount))
-        self.optimizer.zero_grad()
-        numRows=len(self.Y)
-        self.X=np.array(self.X).astype(np.float32)
-        self.Y=np.array(self.Y).reshape(numRows,1).astype(np.float32)
-        dataOutput = self.model(Variable(torch.from_numpy(self.X)))
-        loss = self.criterion(dataOutput,Variable(torch.from_numpy(self.Y)))
-        loss.backward()
-        self.optimizer.step()
+        for curEpoch in range(100):
+            self.optimizer.zero_grad()
+            numRows=len(self.Y)
+            self.X=np.array(self.X).astype(np.float32)
+            self.Y=np.array(self.Y).reshape(numRows,1).astype(np.float32)
+            dataOutput = self.model(Variable(torch.from_numpy(self.X)))
+            loss = self.criterion(dataOutput,Variable(torch.from_numpy(self.Y)))
+            loss.backward()
+            self.optimizer.step()
+        # We will now be updating the QMatrix with the output of the model
+        predictedValues=self.model(Variable(torch.from_numpy(np.array(self.QMatrix.keys()).astype(np.float32)))).data.numpy()
+        self.QMatrix=dict((x[0],x[1][0]) for x in zip(self.QMatrix.keys(),predictedValues))
         
             
     # Q Learning : R Matrix   
