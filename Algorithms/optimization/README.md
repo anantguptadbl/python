@@ -7,6 +7,6 @@ Stochastic Gradient Descent is the most commonly used algorithm
 # SAG
 Stochastic Average Gradient is a new phenomenon </br>
 https://arxiv.org/abs/1309.2388 </br>
-[PDF][https://arxiv.org/pdf/1309.2388]
+Paper PDF https://arxiv.org/pdf/1309.2388
 
 
