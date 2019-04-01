@@ -72,6 +72,7 @@ data['Plot']=data['Plot'].map(lambda x : lemmatizer.lemmatize(x))
 print("All operations completed")
 
 # Find the count of the word and context as per 1 skipgram
+# Find the count of the word and context as per 1 skipgram
 FullCount=[]
 def getCount(x,FullCount):
     # First we will split into individual sentences
@@ -83,11 +84,53 @@ def getCount(x,FullCount):
             FullCount.append([z[w],z[w+2]])
         
 data['Plot'].map(lambda x : getCount(x,FullCount))
-FullCount=[ k+[len(list(g))] for k,g in groupby(FullCount)]
-FullCount=pd.DataFrame(FullCount,columns=['word1','word2','count'])
+FullCount=pd.DataFrame(FullCount,columns=['word1','word2'])
+FullCount['count']=1
+FullCount=FullCount.groupby(['word1','word2'],as_index=False)['count'].sum().reset_index(drop=True)
 FullCount['countLog']=FullCount['count'].map(lambda x : math.log(x))
 
 # Get all the words
-FullWords=list(set(list(FullCount['word1'].unique()) + list(FullCount['word2'].unique())))
+FullCount=FullCount.pivot('word1','word2','count').fillna(0)
+FullWords1=FullCount.index.values
+FullWords2=FullCount.columns.values
 
-# We will now be perfoming the SGD algorithm
+# SGD Approximation for the Vectors
+learningRate=0.00001  
+# This is the regParam which determines that the weight with the smallest variance is taken
+regParam=0.001
+# This is the regParam for updating the biases
+biasParam=0.01
+# RMSE threshold
+rmseThreshold=1e-4
+
+# Input Data
+a=FullCount.values
+
+# Initialization
+FullWords1Length=len(FullWords1)
+FullWords2Length=len(FullWords2)
+x=np.random.rand(FullWords1Length,10)
+y=np.random.rand(FullWords2Length,10)
+biasx=np.zeros(FullWords1Length).reshape(FullWords1Length,1)
+biasy=np.zeros(FullWords2Length).reshape(FullWords2Length,1)
+numElements=FullWords1Length * FullWords2Length
+loopCounter=0
+
+# Calculation
+while(1):
+    loopCounter+=1
+    error=a-((np.matmul(x,y.T) + biasx) + biasy.T)
+    if(np.isnan(error.sum())):
+        print("x is {} and y is {} and error is {}".format(x,y,error))
+        print("We will have to retry because of SGD failing us")
+        break
+    if(loopCounter % 100==0):
+        print("Error : {} for iteration {}".format(error.sum(),loopCounter))
+    if(abs(1.0 * (error.sum()/numElements)) < rmseThreshold):
+        print("Achieved")
+        break
+    else:
+        biasx = biasx + (learningRate * (error - biasParam*biasx))
+        biasy = biasy + (learningRate * (error.T - biasParam*biasy))
+        x=x + ( learningRate * (2 * np.matmul(error,y)) + regParam * x)
+        y=y + ( learningRate * (2 * np.matmul(x.T,error)).T + regParam * y)
