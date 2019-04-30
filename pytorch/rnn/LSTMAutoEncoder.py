@@ -51,7 +51,7 @@ totalBatches=totalElements/(step_size*batch_size)
 
 model=LSTMAutoEncoder(inputDim,hiddenDim,outputDim,batch_size,step_size)
 #loss = torch.nn.MSELoss()
-optimizer = optim.Adam(model.parameters(), lr=0.001)
+optimizer = optim.Adam(model.parameters(),lr=0.0001,amsgrad=True,weight_decay=0.99)
 
 # Input Data
 X=np.random.rand(totalElements,inputDim)
