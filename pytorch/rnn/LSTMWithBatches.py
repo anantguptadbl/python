@@ -28,12 +28,19 @@ class LSTMSimple(nn.Module):
         # input of shape (seq_len, batch, input_size)
         # h_0 of shape (num_layers * num_directions, batch, hidden_size)
         # c_0 of shape (num_layers * num_directions, batch, hidden_size)
-        self.out,self.hidden = lstm(inputs,(self.hidden1,self.hidden2))
+        self.out,self.hidden = self.lstm(inputs,(self.hidden1,self.hidden2))
         self.hidden1=self.hidden1.detach()
         self.hidden2=self.hidden2.detach()
         self.outLinear=self.linearModel(self.out)
         self.fullDataOutput.append(self.outLinear)
         return torch.stack(self.fullDataOutput).view(-1,self.outputDim)
+    
+    def predict(self,inputs):
+        numRows=inputs.size()[1]
+        hidden1 = torch.autograd.variable(torch.randn(1,numRows,self.inputDim))
+        hidden2 = torch.autograd.variable(torch.rand(1,numRows,self.inputDim))
+        out,hidden = self.lstm(inputs,(hidden1,hidden2))
+        return out
         
 def lossCalc(x,y):
     return torch.sum(torch.add(x,-y)).pow(2) 
@@ -61,7 +68,7 @@ Y=np.random.rand(100,outputDim)
 X=X.reshape(totalBatches,step_size,batch_size,inputDim)
 Y=Y.reshape(totalBatches,step_size,batch_size,outputDim)
 
-for epoch in range(1000):
+for epoch in range(100):
     for curBatch in range(100/(step_size*batch_size)):
         dataInput=torch.Tensor(X[curBatch])
         #dataInput=[torch.Tensor(x) for x in dataInput]
@@ -77,3 +84,7 @@ for epoch in range(1000):
     if(epoch % 100==0):
         print("For epoch {}, the loss is {}".format(epoch,loss))
         
+# PREDICTION
+testInput=torch.Tensor(np.array([[0,0,1],[0,1,0],[0,0,0],[1,0,0],[1,1,0]]).reshape(5,1,3))
+prediction = model.predict(testInput)
+print(prediction)
