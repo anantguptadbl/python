@@ -19,7 +19,8 @@ class LSTMSimple(nn.Module):
         # Hidden state is a tuple of two states, so we will have to initialize two tuples
         # h_0 of shape (num_layers * num_directions, batch, hidden_size)
         # c_0 of shape (num_layers * num_directions, batch, hidden_size)
-        self.hidden = (torch.randn(1,self.batch_size,self.hiddenDim) , torch.rand(1,self.batch_size,self.hiddenDim))
+        self.hidden1 = torch.autograd.variable(torch.randn(1,self.batch_size,self.hiddenDim))
+        self.hidden2 = torch.autograd.variable(torch.rand(1,self.batch_size,self.hiddenDim))
         self.linearModel=nn.Linear(self.hiddenDim,self.outputDim)
 
     def forward(self,inputs):
@@ -27,7 +28,9 @@ class LSTMSimple(nn.Module):
         # input of shape (seq_len, batch, input_size)
         # h_0 of shape (num_layers * num_directions, batch, hidden_size)
         # c_0 of shape (num_layers * num_directions, batch, hidden_size)
-        self.out,self.hidden = lstm(inputs,self.hidden)
+        self.out,self.hidden = lstm(inputs,(self.hidden1,self.hidden2))
+        self.hidden1=self.hidden1.detach()
+        self.hidden2=self.hidden2.detach()
         self.outLinear=self.linearModel(self.out)
         self.fullDataOutput.append(self.outLinear)
         return torch.stack(self.fullDataOutput).view(-1,self.outputDim)
