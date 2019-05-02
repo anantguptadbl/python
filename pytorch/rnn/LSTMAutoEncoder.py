@@ -20,7 +20,8 @@ class LSTMAutoEncoder(nn.Module):
         # Hidden state is a tuple of two states, so we will have to initialize two tuples
         # h_0 of shape (num_layers * num_directions, batch, hidden_size)
         # c_0 of shape (num_layers * num_directions, batch, hidden_size)
-        self.hidden = (torch.randn(1,self.batch_size,self.hiddenDim) , torch.rand(1,self.batch_size,self.hiddenDim))
+        self.hidden1 = torch.autograd.variable(torch.randn(1,self.batch_size,self.hiddenDim))
+        self.hidden2 = torch.autograd.variable(torch.rand(1,self.batch_size,self.hiddenDim))
         self.linearModel=nn.Linear(self.hiddenDim,self.outputDim)
 
     def forward(self,inputs):
@@ -28,7 +29,9 @@ class LSTMAutoEncoder(nn.Module):
         # input of shape (seq_len, batch, input_size)
         # h_0 of shape (num_layers * num_directions, batch, hidden_size)
         # c_0 of shape (num_layers * num_directions, batch, hidden_size)
-        self.out,self.hidden = self.lstm(inputs,self.hidden)
+        self.out,self.hidden = self.lstm(inputs,(self.hidden1,self.hidden2))
+        self.hidden1=self.hidden1.detach()
+        self.hidden2=self.hidden2.detach()
         self.outLinear=self.linearModel(self.out)
         self.fullDataOutput.append(self.outLinear)
         return torch.stack(self.fullDataOutput).view(-1,self.outputDim)
@@ -40,7 +43,7 @@ def lossCalc(x,y):
 inputDim=5
 hiddenDim=5
 outputDim=5
-epochRange=500
+epochRange=5000
 
 # LSTM Configuration
 totalElements=100  # This denotes the number of rows. Each row consits of the number of inputElements
@@ -64,12 +67,12 @@ for epoch in range(epochRange):
     for curBatch in range(totalElements/(step_size*batch_size)):
         model.zero_grad()
         dataInput=torch.Tensor(X[curBatch])
-        dataY=torch.Tensor(Y[curBatch])
+        #dataY=torch.Tensor(Y[curBatch])
         dataOutput=model(dataInput)
         loss=lossCalc(dataOutput,dataInput.view(step_size*batch_size,-1))
         lossVal = lossVal + loss
-        loss.backward(retain_graph=True)
-        optimizer.step()
-    if(epoch % 10==0):
+    loss.backward()
+    optimizer.step()
+    if(epoch % 1000==0):
         print("For epoch {}, the loss is {}".format(epoch,lossVal))
 print("Autoencoder Training completed")
