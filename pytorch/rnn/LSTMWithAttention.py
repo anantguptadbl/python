@@ -44,12 +44,16 @@ class LSTMAutoEncoderWithAttention(nn.Module):
         self.hidden1_1=self.hidden1_1.detach()
         self.hidden1_2=self.hidden1_2.detach()
         
+        # NORMALIZE THE ATTENTION WEIGHTS
+        self.attentionWeightsNormalized = nn.functional.softmax(self.attentionWeights)
+        #output = nn.functional.linear(x, w_normalized)
+        
         # ATTENTION WEIGHTS FOR EACH STEP
         self.attentionOutput=[]
-        for x in range(self.attentionWeights.size()[0]):
+        for x in range(self.attentionWeightsNormalized.size()[0]):
             self.stepAttentionOutput=torch.zeros(self.batch_size,self.hiddenDim)
-            for y in range(self.attentionWeights.size()[1]):
-                self.stepAttentionOutput = torch.add(self.stepAttentionOutput , self.hidden1List[y] * torch.autograd.Variable(self.attentionWeights[x][y]))
+            for y in range(self.attentionWeightsNormalized.size()[1]):
+                self.stepAttentionOutput = torch.add(self.stepAttentionOutput , self.hidden1List[y] * torch.autograd.Variable(self.attentionWeightsNormalized[x][y]))
             self.attentionOutput.append(self.stepAttentionOutput)
             
         # STEP 3 : DECODER LSTM
@@ -108,3 +112,7 @@ for epoch in range(epochRange):
     if(epoch % 100==0):
         print("For epoch {}, the loss is {}".format(epoch,lossVal))
 print("Autoencoder Training completed")
+
+# ATTENTION ANALYSIS
+print(model.attentionWeightsNormalized)
+# Based on the weights, we can analyse which word had the most importance within the entire sequence
