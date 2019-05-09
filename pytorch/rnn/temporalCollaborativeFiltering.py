@@ -78,12 +78,6 @@ class LSTMAutoEncoderWithAttention(nn.Module):
         hidden1_1 = torch.autograd.variable(torch.randn(1,1,hiddenDim))
         hidden1_2 = torch.autograd.variable(torch.randn(1,1,hiddenDim))
         for x in inputs:
-            print(x)
-            print(x.size())
-            print(hidden1_1.size())
-            print(x.type())
-            print(hidden1_1.type())
-            print(hidden1_2.type())
             out1,(hidden1_1,hidden1_2) = self.lstm1(x.view(1,1,self.inputDim),(hidden1_1,hidden1_2))
             hidden1List.append(hidden1_1)
             
@@ -97,10 +91,11 @@ class LSTMAutoEncoderWithAttention(nn.Module):
         # STEP 4 : LINEAR
         lstmout2=torch.stack(attentionOutput)
         outLinear=self.linearModel(lstmout2)
-        fullDataOutput.append(outLinear)
-        print(len(fullDataOutput))
-        print(fullDataOutput[0].size())
-        return torch.stack(fullDataOutput).view(-1,self.outputDim)  
+        return outLinear
+        #fullDataOutput.append(outLinear)
+        #print(len(fullDataOutput))
+        #print(fullDataOutput[0].size())
+        #return torch.stack(fullDataOutput).view(-1,self.outputDim)  
         
         
 def lossCalc(x,y):
@@ -142,8 +137,10 @@ for epoch in range(epochRange):
 print("Autoencoder Training completed")
 
 # PREDICTION
-
-a=np.random.randint(1,size=(5,100))
+print("Prediction Started")
+a=np.random.randint(1,size=(5,100)).astype(np.float)
 for i in range(5):
     a[i][i]=5
-model.predict(torch.tensor(a))
+print(type(a))
+prediction=model.predict(torch.tensor(a).float())
+print("Prediction Completed")
