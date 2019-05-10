@@ -5,9 +5,16 @@ from sklearn import datasets, linear_model
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.feature_selection import f_regression
 
+def addScores(row,columnNames):
+    aggScore=0
+    for curScoreColumn in columnNames:
+        aggScore=aggScore + row[curScoreColumn]
+    return aggScore    
 
 # KLIME CLASS
 class klimeMultiLabel():
+
+    
     def __init__(self,data,scoreColumns,explainColumn='explain',clusterColumn='cluster'):
         self.data=data
         self.scoreColumns=scoreColumns
@@ -22,8 +29,7 @@ class klimeMultiLabel():
         self.data['explain_local_global']=''
         self.data['explain_global_global']=''
         # Generating the aggregated score
-        self.data['aggregatedScore']=self.data.apply(lambda row : addScores(row),axis=1)
-        print(self.data.head(5))
+        self.data['aggregatedScore']=self.data.apply(lambda row : addScores(row,self.scoreColumns),axis=1)
             
     
     def addScores(self,row):
@@ -37,10 +43,10 @@ class klimeMultiLabel():
 
     def getLinearRegressionRSquared(self,data):
         r2Score=0
-        for eachScoreScolumn in scoreColumns:
+        for eachScoreScolumn in self.scoreColumns:
             r2Score = r2Score + r2_score(
-            data[self.scoreColumn].values,
-            linear_model.LinearRegression().fit(data[self.cols].values,data[self.scoreColumns].values).predict(data[self.cols].values)
+            data[eachScoreScolumn].values,
+            linear_model.LinearRegression().fit(data[self.cols].values,data[eachScoreScolumn].values).predict(data[self.cols].values)
         )
             return r2Score
 
@@ -55,7 +61,7 @@ class klimeMultiLabel():
 
     def getLinearRegressionTop5Features(self,data,scoreColumn):
         if(data.shape[0] > 0):
-            pValues=zip(self.cols,list(f_regression(data[self.cols].values,data[self.scoreColumn].values,center=True)[1]))
+            pValues=zip(self.cols,list(f_regression(data[self.cols].values,data[scoreColumn].values,center=True)[1]))
             pValues=sorted(pValues,key=lambda l:l[1], reverse=True)
             return(str(pValues[0:5]))
         else:
@@ -79,11 +85,11 @@ class klimeMultiLabel():
         
 if __name__=="__main__":
     # Create sample data
-    data=np.random.rand(10000,5)
-    data=pd.DataFrame(data,columns=['col1','col2','col3','col4','score'])
+    data=np.random.rand(10000,6)
+    data=pd.DataFrame(data,columns=['col1','col2','col3','col4','score1','score2'])
     
     # Running Klime
-    ko=klime(data,'score')
+    ko=klimeMultiLabel(data,['score1','score2'])
     print("Generated the KLime Object")
     
     ko.getFeatures()
