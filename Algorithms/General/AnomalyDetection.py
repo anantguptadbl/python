@@ -1,3 +1,5 @@
+# Plain anomaly detection
+
 import pandas as pd
 import numpy as np
 data=pd.DataFrame([10,2,3,4,5,0,2,3,0,4,0,4,0,4,0,0,4,0,4,0,0,4,0,4,0,0,4,0,4,0,0,4,0,4,0,0,4,0,4,0,0,4,0,4,0],columns=['data1'])
