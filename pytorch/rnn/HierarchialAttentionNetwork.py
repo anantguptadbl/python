@@ -1,27 +1,4 @@
 #import pandas as pd
-#data=pd.read_csv('hotel-review/train.csv')
-
-import nltk
-
-validPosTags=['JJ','JJR','JJS','NN','RB','RBR','RBS','VB','VBD','VBG','VBZ']
-
-def removeUnncessaryTags(x):
-    # For ech sentnece in a row
-    # For each word in a sentence
-    validSentences=[]
-    for curSentence in x.split('.'):
-        validWords=[]
-        for curWord in curSentence.split(' '):
-            if(len(curWord.strip()) > 2):
-                if(nltk.pos_tag([curWord.lower()])[0][1] in validPosTags):
-                    validWords.append(curWord.lower())
-        validSentences.append(validWords)
-    return(validSentences)
-            
-                
-data=data[0:10000]
-data['data']=data['Description'].map(lambda x : removeUnncessaryTags(x))
-data.head(5)
 
 
 import numpy as np
@@ -42,16 +19,24 @@ class LSTMHierarchialAttention(nn.Module):
         self.step_size2=numSentences
         torch.manual_seed(1)
         self.lstm1=nn.LSTM(self.inputDim,self.hiddenDim)
+        self.lstm2=nn.LSTM(self.hiddenDim,self.hiddenDim)
         self.hidden1_1 = torch.autograd.variable(torch.randn(1,self.batch_size1,self.hiddenDim))
         self.hidden1_2 = torch.autograd.variable(torch.randn(1,self.batch_size1,self.hiddenDim))
+        self.hidden2_1 = torch.autograd.variable(torch.randn(1,self.batch_size2,self.hiddenDim))
+        self.hidden2_2 = torch.autograd.variable(torch.randn(1,self.batch_size2,self.hiddenDim))
         
          # ATTENTION WEIGHTS WORD LEVEL
-        self.attentionWeightsWords=torch.autograd.variable(torch.randn(self.hiddenDim,self.step_size1))
-        #self.attentionWeightsWords=torch.autograd.variable(torch.randn(self.step_size1,self.hiddenDim))
-        #self.attentionWeightsSentence=torch.autograd.variable(torch.randn(self.inputDim,self.step_size))
+        self.attentionWeightsWords=torch.autograd.variable(torch.randn(1,self.step_size1))
+        self.attentionWeightsSentences=torch.autograd.variable(torch.randn(1,self.step_size2))
+        
+        # Final Linear Model with Sigmoid
+        self.finalLayer=nn.Sequential(
+            nn.Linear(self.hiddenDim,1),
+            nn.Sigmoid()
+        )
         
     def forward(self,inputs):
-        print("the size of the inputs is {}".format(inputs.size()))
+        #print("the size of the inputs is {}".format(inputs.size()))
         self.sentenceEncodingHiddenList=[]
         # This is the start of the sentence
         for curSentence in inputs:
@@ -67,28 +52,33 @@ class LSTMHierarchialAttention(nn.Module):
         
             # NORMALIZE THE ATTENTION WEIGHTS
             self.attentionWeightsWordsNormalized = nn.functional.softmax(self.attentionWeightsWords)
-            #print(self.attentionWeightsWordsNormalized)
-        
-            # ITERATING THROUGH EACH WORD SEQUENCE
-            print(len(self.wordEncodingHiddenList))
-            print(self.wordEncodingHiddenList[0].shape)
-            print(torch.stack(self.wordEncodingHiddenList).view(self.step_size1,self.hiddenDim).size())
-            print(self.attentionWeightsWordsNormalized.size())
             self.wordEncodingHiddenList1=torch.stack(self.wordEncodingHiddenList).view(self.step_size1,self.hiddenDim)
-        
-            self.stepAttentionOutput=self.wordEncodingHiddenList1 * torch.t(self.attentionWeightsWordsNormalized)
-            print(self.stepAttentionOutput.size())
-          
+            self.stepAttentionOutput=torch.matmul(self.attentionWeightsWordsNormalized,self.wordEncodingHiddenList1)
+			
             # NOW WE WILL USE THIS TO ARRIVE AT A SINGLE VECTOR FOR EACH SENTENCE
-            print("After the calculations is done, we have got the vector for a single sentence")
-            print(self.stepAttentionOutput.size())
-            print("We will now start the attention for the sentence level stuff")
+
+            self.sentenceEncodingHiddenList.append(self.stepAttentionOutput)
         
-            self.out1,(self.hidden1_1,self.hidden1_2) = self.lstm1(x.view(1,self.batch_size1,self.inputDim),(self.hidden1_1,self.hidden1_2))
-            self.wordEncodingHiddenList.append(self.hidden1_1)
+        self.sentenceEncodingHiddenList1=torch.stack(self.sentenceEncodingHiddenList)
+        self.rowEncodingList=[]
+        for curSentence in self.sentenceEncodingHiddenList1:
+            self.out2,(self.hidden2_1,self.hidden2_2) = self.lstm2(curSentence.view(1,self.batch_size2,self.hiddenDim),(self.hidden2_1,self.hidden2_2))
+            self.rowEncodingList.append(self.hidden2_1) 
+            
+        # DETACHING THE HIDDEN STATE AND CELL STATE for ENCODER LSTM
+        self.hidden2_1=self.hidden2_1.detach()
+        self.hidden2_2=self.hidden2_2.detach()
         
-        #return self.attentionOutput
-        return torch.stack(self.stepAttentionOutput)
+        # NORMALIZE THE ATTENTION WEIGHTS
+        self.attentionWeightsSentencesNormalized = nn.functional.softmax(self.attentionWeightsSentences)
+        self.rowEncodingList1=torch.stack(self.rowEncodingList).view(self.step_size2,self.hiddenDim)
+        self.rowAttentionOutput=torch.matmul(self.attentionWeightsSentencesNormalized,self.rowEncodingList1)
+        
+        
+        # We will now apply a linear model to convert the 40 dimensions to 2 dimensions for output
+        self.finalOutput=self.finalLayer(self.rowAttentionOutput)
+        
+        return self.finalOutput
     
 def lossCalc(x,y):
     return torch.sum(torch.add(x,-y)).pow(2) 
@@ -97,16 +87,16 @@ def lossCalc(x,y):
 inputDim=20
 hiddenDim=40
 outputDim=40
-epochRange=100
+epochRange=1000
 
     
 # LSTM Configuration
-numRows=2500  # This denotes the number of rows. Each row consits of the number of inputElements
+numRows=10  # This denotes the number of rows. Each row consits of the number of inputElements
 numSentences=5       # This is the number of rows that will be used for gradient update
 numWords=10         # This is the number of LSTM cells
 batch_size1=1
-batch_size2=5
-totalBatches=numRows/batch_size1
+batch_size2=1
+totalBatches=int(numRows/batch_size1)
 
 model=LSTMHierarchialAttention(inputDim,hiddenDim,outputDim,batch_size1,batch_size2,numWords,numSentences)
 #loss = torch.nn.MSELoss()
@@ -118,17 +108,20 @@ X=np.random.rand(numRows * numSentences * numWords,inputDim)
 # Resizing
 X=X.reshape(totalBatches,numSentences,numWords,inputDim)
 
+# Creating Y
+Y=np.random.randint(2,size=(numRows))
+
 for epoch in range(epochRange):
     lossVal=0
     for curBatch in range(totalBatches):
         model.zero_grad()
         dataInput=torch.autograd.Variable(torch.Tensor(X[curBatch]))
         dataOutput=model(dataInput)
-        print(dataOutput.size())
+        #print(dataOutput.size())
         loss=lossCalc(dataOutput,dataInput.view(step_size*batch_size1,-1))
         loss.backward()
         lossVal = lossVal + loss
         optimizer.step()
-    if(epoch % 100==0):
+    if(epoch % 1==0):
         print("For epoch {}, the loss is {}".format(epoch,lossVal))
 print("Autoencoder Training completed")
