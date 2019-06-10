@@ -39,7 +39,7 @@ class LSTMAutoEncoder(nn.Module):
         # STEP 2 : CREATE SEQUENCE FROM THE HIDDEN VECTOR STATE
         self.input2=self.hidden1[0].repeat(self.step_size,1,1)
         # STEP 3 : LSTM 2
-        self.out2,self.hidden2 = self.lstm1(self.input2,(self.hidden2_1,self.hidden2_2))
+        self.out2,self.hidden2 = self.lstm2(self.input2,(self.hidden2_1,self.hidden2_2))
         # STEP 4 : LINEAR
         self.outLinear=self.linearModel(self.out2)
         self.fullDataOutput.append(self.outLinear)
