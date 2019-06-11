@@ -12,5 +12,8 @@ Paper PDF https://arxiv.org/pdf/1309.2388
 # ADAM
 Adam Optimizer is the latest craze in Optimizer algorithms </br>
 https://arxiv.org/pdf/1412.6980.pdf
+</br>
+You can also take a look at my blog for better understanding
+https://anantguptadbl.github.io/optimizers/2018/12/28/UnderstandingAdamOptimizer.html
 
 
