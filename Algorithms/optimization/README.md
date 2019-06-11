@@ -9,4 +9,8 @@ Stochastic Average Gradient is a new phenomenon </br>
 https://arxiv.org/abs/1309.2388 </br>
 Paper PDF https://arxiv.org/pdf/1309.2388
 
+# ADAM
+Adam Optimizer is the latest craze in Optimizer algorithms </br>
+https://arxiv.org/pdf/1412.6980.pdf
+
 
