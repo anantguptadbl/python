@@ -96,7 +96,7 @@ class LSTMSimple(nn.Module):
         self.attLayer1=AttLayer1(1,attentionDim1)
         
         # Add the Attention Layer for the timestep
-        self.attLayer2=AttLayer2(3,attentionDim2)
+        self.attLayer2=AttLayer2(hiddenDim,attentionDim2)
         
         # Final Linear Model Initialization
         self.linearModel=nn.Linear(hiddenDim,outputDim)
