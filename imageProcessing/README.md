@@ -6,4 +6,5 @@ GANs are a work of art. In the following folder, I have tried to code up various
 
 ### Simple GAN
 This is a simple setup with a gnerator and a discriminator
+
 DataSet Used : https://www.kaggle.com/smeschke/four-shapes
