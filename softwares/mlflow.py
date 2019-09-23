@@ -23,9 +23,6 @@ def eval_metrics(actual, pred):
     r2 = r2_score(actual, pred)
     return rmse, mae, r2
 
-
-
-
 warnings.filterwarnings("ignore")
 np.random.seed(40)
 
@@ -57,6 +54,13 @@ for alpha in [0.2,0.5,0.7,0.9]:
             mlflow.log_metric("rmse", rmse)
             mlflow.log_metric("r2", r2)
             mlflow.log_metric("mae", mae)
-
+            mlflow.log_param("model","elasticNetModel")
             mlflow.sklearn.log_model(lr, "elasticNetModel")
+            
+print("Cell Execution Completed")
+
+
+# Now on the command line, if we write 
+# prompt> mlflow ui
+# Serving on http://127.0.0.1:5000
 
