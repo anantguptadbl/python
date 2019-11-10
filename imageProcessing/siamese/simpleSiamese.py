@@ -49,26 +49,31 @@ class ContrastiveLoss(nn.Module):
         contrastiveLoss=torch.mean( (1-label)* torch.pow(dW,2) + label*(torch.pow(torch.clamp(self.margin - dW, min=0.0), 2))).cuda()
         return(contrastiveLoss)
 
-class siamese(nn.Module):
+class netLayer(nn.Module):
     def __init__(self):
-        super(siamese,self).__init__()
+        super(netLayer,self).__init__()
         self.l1=nn.Linear(100,200).cuda()
         self.l2=nn.Linear(200,50).cuda()
         self.l3=nn.Linear(50,10).cuda()
-
-    def individualForward(self,x):
+    
+    def forward(self,x):
         x=self.l1(x).cuda()
         x=self.l2(x).cuda()
         x=self.l3(x).cuda()
         return(x)
     
+class siamese(nn.Module):
+    def __init__(self):
+        super(siamese,self).__init__()
+        self.net=netLayer()
+
     def forward(self,x,y):
-        out1=self.individualForward(x).cuda()
-        out2=self.individualForward(y).cuda()
+        out1=self.net(x).cuda()
+        out2=self.net(y).cuda()
         return(out1,out2)
     
 
-num_epochs=100
+num_epochs=10000
 numBatches=int(q1.shape[0]/batchSize)
 batchSize=128
 model=siamese().cuda()
@@ -87,5 +92,5 @@ for epoch in range(num_epochs):
         loss.backward()
         optimizer.step()
         totalLoss=totalLoss + loss.item()
-    if(epoch%1==0):
+    if(epoch%10==0):
         print("Epoch {0}  Batch{1} Loss {2}".format(epoch,curBatch,totalLoss))
