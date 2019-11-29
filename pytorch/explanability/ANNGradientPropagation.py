@@ -68,3 +68,33 @@ for curLayerIndex in range(len(layerNames)-1):
         for i,x in enumerate(curSubLayer):
             layersDict[layerNames[len(layerNames)-curLayerIndex-2]][i]=layersDict[layerNames[len(layerNames)-curLayerIndex-2]][i]*x[0]
 featureImportance=np.sum(np.array(layersDict[layerNames[0]]),axis=0)
+
+#layer1=[]
+#for featureNumber,feature in enumerate(model._modules['l1'].weight.detach().numpy()):
+#    curResult=X[0]*feature
+#    curResult=np.absolute(curResult)
+#    curResult=curResult/np.sum(curResult)
+#    layer1.append(curResult)
+#    
+#layer2=[]
+#for featureNumber,feature in enumerate(model._modules['l2'].weight.detach().numpy()):
+#    curResult=feature * model.b1(model.l1(Variable(torch.from_numpy(X[0].reshape(1,100))))).detach().numpy()
+#    curResult=np.absolute(curResult)
+#    curResult=curResult/np.sum(curResult)
+#    layer2.append(curResult)
+#    
+#layer3=[]
+#for featureNumber,feature in enumerate(model._modules['l3'].weight.detach().numpy()):
+#    curResult=feature * model.b2(model.l2(model.b1(model.l1(Variable(torch.from_numpy(X[0].reshape(1,100))))))).detach().numpy()
+#    curResult=np.absolute(curResult)
+#    curResult=curResult/np.sum(curResult)
+#    layer3.append(curResult)
+#    
+#for curLayer in layer3:
+#    for i,x in enumerate(curLayer):
+#        layer2[i]=layer2[i]*x[0]
+#        
+#for curLayer in layer2:
+#    for i,x in enumerate(curLayer):
+#        layer1[i]=layer1[i]*x[0]
+#finalImp=np.sum(np.array(layer1),axis=0)
