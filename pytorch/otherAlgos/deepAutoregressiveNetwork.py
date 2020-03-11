@@ -5,12 +5,14 @@ class dan(nn.Module):
     super(dan,self).__init__()
     self.hiddenDim=100
     self.l1=nn.Linear(10,5)
+    self.b1=nn.BatchNorm1d(5)
     self.l2=nn.Linear(5,3)
+    self.b2=nn.BatchNorm1d(3)
     self.l3=nn.Linear(3,1)
 
   def forward(self,x):
-    x=self.l1(x)
-    x=self.l2(x)
+    x=self.b1(F.relu(self.l1(x)))
+    x=self.b2(F.relu(self.l2(x)))
     x=self.l3(x)
     return(x)
 
@@ -38,4 +40,3 @@ for curEpoch in range(epochs):
     optimizer.step()
   if(curEpoch%1000==0):
     print("Epoch {0} Loss {1}".format(curEpoch,totalLoss))
-  
