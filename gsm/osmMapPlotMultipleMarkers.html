@@ -1,0 +1,173 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>OpenLayers Simplest Example</title>
+</head>
+<body>
+<div id="Map" style="height:1000px"></div>
+<!--
+<script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.2.1/build/ol.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.2.1/css/ol.css">
+-->
+<script src="OpenLayers.js"></script>
+<script>
+    var lat            = 28.35387;
+    var lon            = 77;
+    var zoom           = 10;
+	var size = new OpenLayers.Size(21,25);
+	var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
+	var icon = new OpenLayers.Icon('blueMarker.png', size, offset);
+	var icon1 = new OpenLayers.Icon('redMarker.png', size, offset);
+	var icon2= new OpenLayers.Icon('yellowMarker.png', size, offset);
+
+    var fromProjection = new OpenLayers.Projection("EPSG:4326");   // Transform from WGS 1984
+    var toProjection   = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection
+    var position       = new OpenLayers.LonLat(lon, lat).transform( fromProjection, toProjection);
+	//var position1       = new OpenLayers.LonLat(lon1, lat1).transform( fromProjection, toProjection);
+	//var position2      = new OpenLayers.LonLat(lon2, lat2).transform( fromProjection, toProjection);
+
+    map = new OpenLayers.Map("Map");
+    var mapnik         = new OpenLayers.Layer.OSM();
+    map.addLayer(mapnik);
+
+	/*
+	var markers4 = new OpenLayers.Layer.Markers( "Markers" );
+	var icon1= new OpenLayers.Icon('yellowMarker.png', size, offset);
+	markers4.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(77.3, 28.6).transform( fromProjection, toProjection),icon1));
+	console.log("Marker 4 " + markers4);
+	map.addLayer(markers4);
+	
+	var markers6 = new OpenLayers.Layer.Markers( "Markers" );
+	var icon1= new OpenLayers.Icon('yellowMarker.png', size, offset);
+	markers6.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(77.5, 28.6).transform( fromProjection, toProjection),icon1));
+	console.log("Marker 4 " + markers6);
+	map.addLayer(markers6);
+	
+	var markers5 = new OpenLayers.Layer.Markers( "Markers" );
+	markers5.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(77.4, 28.6).transform( fromProjection, toProjection),icon2));
+	console.log("MArkr 5 " + markers5);
+	map.addLayer(markers5);
+	*/
+    //var markers1 = new OpenLayers.Layer.Markers( "Markers" );
+    //map.addLayer(markers1);
+    //markers1.addMarker(new OpenLayers.Marker(position,icon));
+	
+	// Deep Decrease in Throughput
+	var seventyPercDecrease=[[28.5995   , 77.365361 ],
+       [28.62663  , 77.37156  ],
+       [28.4906389, 77.0797222],
+       [28.502    , 77.096    ],
+       [28.50997  , 77.08498  ],
+       [28.39064  , 77.31374  ],
+       [28.51046  , 77.08517  ],
+       [28.43415  , 77.01831  ],
+       [28.46932  , 77.30437  ],
+       [28.4841944, 77.5308889],
+       [28.45096  , 77.28714  ],
+       [28.49703  , 77.094206 ],
+       [28.64244  , 77.223944 ],
+       [28.647917 , 77.163556 ],
+       [28.45513  , 77.06291  ]];
+	//var markers1 = new OpenLayers.Layer.Markers( "Markers" );
+    //map.addLayer(markers1);
+	for(counter=0;counter<seventyPercDecrease.length;counter++)
+	{
+		var markers1 = new OpenLayers.Layer.Markers( "Markers" );
+		var icon1 = new OpenLayers.Icon('redMarker.png', size, offset);
+		markers1.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(seventyPercDecrease[counter][1], seventyPercDecrease[counter][0]).transform( fromProjection, toProjection),icon1));
+		console.log(markers1);
+		map.addLayer(markers1);
+	}
+	
+	// Deep Increase in Throughput
+	var seventyPercIncrease=[[28.7022778, 77.1409444],
+       [28.6813333, 77.2073333],
+       [28.356278 , 77.321167 ],
+       [28.608917 , 77.290889 ],
+       [28.45501  , 77.31167  ],
+       [28.4335556, 77.3081944],
+       [28.6895278, 77.4403056],
+       [28.498    , 77.08405  ],
+       [28.4646389, 77.0507222],
+       [28.6862778, 77.275    ],
+       [28.4221667, 76.9996667],
+       [28.62939  , 77.08197  ],
+       [28.4585   , 77.0252222],
+       [28.6555833, 77.2286389],
+       [28.6059   , 77.20267  ],
+       [28.589611 , 77.225028 ],
+       [28.432916 , 77.020111 ],
+       [28.5105556, 77.0886667],
+       [28.4960278, 77.0905556],
+       [28.48002  , 77.08962  ],
+       [28.44541  , 77.04038  ],
+       [28.50954  , 77.0726   ],
+       [28.6253611, 77.3708611],
+       [28.505    , 77.2562778],
+       [28.42837  , 77.05789  ],
+       [28.4898056, 77.0725278],
+       [28.5973889, 77.1739444],
+       [28.643214 , 77.185947 ],
+       [28.40957  , 77.23611  ],
+       [28.49233  , 77.08672  ],
+       [28.5614444, 77.2928056],
+       [28.6508056, 77.4681667],
+       [28.2906667, 77.2640556],
+       [28.5006667, 76.9936667],
+       [28.50093  , 77.13333  ],
+       [28.421306 , 77.156389 ],
+       [28.4849722, 77.0940278],
+       [28.56     , 77.27177  ],
+       [28.4691667, 77.0529167],
+       [28.4720556, 77.0713333],
+       [28.4973056, 77.0914167],
+       [28.655306 , 77.465833 ],
+       [28.76753  , 77.26425  ],
+       [28.4394722, 77.0595   ],
+       [28.65025  , 77.19356  ],
+       [28.4968056, 77.09675  ],
+       [28.4968056, 77.09675  ],
+       [28.46211  , 77.06421  ],
+       [28.4976944, 77.0818889],
+       [28.4376944, 77.3100556],
+       [28.49375  , 77.0883333],
+       [28.32105  , 77.30282  ],
+       [28.3639167, 76.9323056],
+       [28.552876 , 77.086255 ],
+       [28.60223  , 77.22931  ],
+       [28.4897778, 77.0924444],
+       [28.43231  , 77.01397  ],
+       [28.50925  , 77.070194 ],
+       [28.4338889, 77.0118611],
+       [28.4904167, 77.0928611],
+       [28.5088889, 77.0921944],
+       [28.434106 , 77.157294 ],
+       [28.45291  , 77.07181  ],
+       [28.378833 , 76.879222 ],
+       [28.46821  , 77.06966  ],
+       [28.596374 , 77.036015 ],
+       [28.426655 , 77.031518 ],
+       [28.510351 , 77.071404 ],
+       [28.6871944, 77.1825   ],
+       [28.6603056, 77.2624167],
+       [28.55708  , 77.21395  ],
+       [28.4584167, 77.3099167],
+       [28.4909722, 77.0841944],
+       [28.501833 , 77.084444 ],
+       [28.3942778, 77.32975  ],
+       [28.6843056, 77.1283333]]
+	//var markers2 = new OpenLayers.Layer.Markers( "Markers" );
+    //map.addLayer(markers2);
+	for(counter=0;counter<seventyPercIncrease.length;counter++)
+	{
+		var markers2 = new OpenLayers.Layer.Markers( "Markers" );
+		var icon2= new OpenLayers.Icon('yellowMarker.png', size, offset);
+		markers2.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(seventyPercIncrease[counter][1], seventyPercIncrease[counter][0]).transform( fromProjection, toProjection),icon2));
+		console.log(markers2);
+		map.addLayer(markers2);
+	}
+	
+    map.setCenter(position, zoom);
+</script>
+</body>
+</html>
