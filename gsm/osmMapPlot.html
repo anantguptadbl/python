@@ -1,0 +1,50 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>OpenLayers Simplest Example</title>
+</head>
+<body>
+<div id="Map" style="height:1000px"></div>
+<!--
+<script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.2.1/build/ol.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.2.1/css/ol.css">
+-->
+<script src="OpenLayers.js"></script>
+<script>
+    var lat            = 47.35387;
+    var lon            = 8.43609;
+	var lat1=48;
+	var lon1=9
+	var lat2=49;
+	var lon2=10;
+    var zoom           = 18;
+	var size = new OpenLayers.Size(21,25);
+	var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
+	var icon = new OpenLayers.Icon('blueMarker.png', size, offset);
+	var icon1 = new OpenLayers.Icon('redMarker.png', size, offset);
+	var icon2= new OpenLayers.Icon('yellowMarker.png', size, offset);
+
+    var fromProjection = new OpenLayers.Projection("EPSG:4326");   // Transform from WGS 1984
+    var toProjection   = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection
+    var position       = new OpenLayers.LonLat(lon, lat).transform( fromProjection, toProjection);
+	var position1       = new OpenLayers.LonLat(lon1, lat1).transform( fromProjection, toProjection);
+	var position2      = new OpenLayers.LonLat(lon2, lat2).transform( fromProjection, toProjection);
+
+    map = new OpenLayers.Map("Map");
+    var mapnik         = new OpenLayers.Layer.OSM();
+    map.addLayer(mapnik);
+
+    var markers1 = new OpenLayers.Layer.Markers( "Markers" );
+    map.addLayer(markers1);
+    markers1.addMarker(new OpenLayers.Marker(position,icon));
+	var markers2 = new OpenLayers.Layer.Markers( "Markers" );
+    map.addLayer(markers2);
+    markers2.addMarker(new OpenLayers.Marker(position1,icon1));
+	var markers3 = new OpenLayers.Layer.Markers( "Markers" );
+    map.addLayer(markers3);
+    markers3.addMarker(new OpenLayers.Marker(position2,icon2));
+
+    map.setCenter(position, zoom);
+</script>
+</body>
+</html>
