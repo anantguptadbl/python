@@ -15,6 +15,13 @@ from nltk.stem import PorterStemmer, WordNetLemmatizer
 import tensorflow as tf
 
 
+def removeSpecialChars(x):
+    #x=re.sub(r'[,-|\(\)\*\+=@!%$\^&\[\]\{\}~]', '',x)
+    x=re.sub("[,$\-!@%\^&\*'\(\)|{}\+\d_=<>\?/\"\[\]]", ' ',x)
+    x=x.replace('\n','').replace('\r','')
+    x=re.sub('\s+',' ',x)
+    return(x)
+
 def preProcessing(data):
     # Remove Special Characters
     data=re.sub(r'[^\x00-\x7f]+',' ',data)
