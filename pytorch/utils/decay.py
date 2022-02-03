@@ -51,7 +51,7 @@ class DecayNeuron(nn.Module):
         self.current_active[self.init_positions[:, 0], self.init_positions[:, 1]] = 1
         
     def forward(self, x):
-        x = torch.matmul(x, current_active[:, 2] * self.weights) + self.bias
+        x = torch.matmul(x, self.current_active[:, 2] * self.weights) + self.bias
         # We will roll to make it inactive for the next two iterations
         self.current_active = torch.roll(self.current_active, 1, 1)
         return x
